@@ -1,0 +1,8 @@
+while (x>2){
+    if (x/k==2){
+        y=true;
+    }
+    else{
+        t=false
+    }
+}

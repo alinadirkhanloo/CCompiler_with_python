@@ -1,0 +1,13 @@
+y=3;
+z=0;
+x=z+y;
+
+while (q==true){
+    z=y;
+    y=z+y;
+    x=z+y;
+
+    if(z>100){
+        q=false;
+    }
+}
