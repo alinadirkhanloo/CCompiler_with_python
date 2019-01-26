@@ -1,7 +1,7 @@
 import yacc as yacc
 import lex as lex
 
-
+#
 class Stack:
     def __init__(self):
         self.items = []
@@ -28,7 +28,7 @@ class Stack:
 symbolTable = []
 semnticstack = Stack()
 typestack = Stack()
-PB = Stack()
+PB =[]
 loop = Stack()
 i = []
 u = []
@@ -36,6 +36,8 @@ tb = 0
 sc = []
 index1=0
 index2=0
+doindex1=0
+windex=0
 reserved = {
     'if': 'IF',
     'else': 'ELSE',
@@ -266,30 +268,16 @@ def typecheck(ch1, ch2):
 
 def generate_code(action, p1, p3):
     if action == '=':
-        PB.push(['=', p3, p1])
+        PB.append(['=', p3, p1])
     elif action == '*':
-        PB.push(['*', p1, p3, 'temp' + str(counterU)])
+        PB.append(['*', p1, p3, 'temp' + str(counterU)])
     elif action == '/':
-        PB.push(['/', p1, p3, 'temp' + str(counterU)])
+        PB.append(['/', p1, p3, 'temp' + str(counterU)])
     elif action == '+':
-        PB.push(['+', p1, p3, 'temp' + str(counterU)])
+        PB.append(['+', p1, p3, 'temp' + str(counterU)])
     elif action == '-':
-        PB.push(['-', p1, p3, 'temp' + str(counterU)])
+        PB.append(['-', p1, p3, 'temp' + str(counterU)])
     return 'temp' + str(counterU)
-
-def if_else_generate_code(action, p1, p3,index):
-    if action == '=':
-        PB.push_to(['=', p1, p3],index)
-    elif action == '*':
-        PB.push_to(['*', p1, p3, 'temp' + str(counterU)],index)
-    elif action == '/':
-        PB.push_to(['/', p1, p3, 'temp' + str(counterU)],index)
-    elif action == '+':
-        PB.push_to(['+', p1, p3, 'temp' + str(counterU)],index)
-    elif action == '-':
-        PB.push_to(['-', p1, p3, 'temp' + str(counterU)],index)
-    return 'temp' + str(counterU)
-
 
 
 def p_program(p):
@@ -327,6 +315,7 @@ def p_var_declaration(p):
         print(" void cant use for thisssssssssssssssssssss")
         exit(1)
     typecheck(p[1], p[2])
+    p[0]=p[2]
     print("p_var_declaration", p[1], p[2])
 
 
@@ -368,7 +357,7 @@ def p_var_decl_ids(p):
     check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
-
+    PB.append([p[2],p[3],p[1]])
     print("p_var_decl_id_other")
 
 
@@ -484,54 +473,50 @@ def p_expression_stmt_eps(p):
 
 def p_do_while_stmt(p):
     'do_while_stmt : do statement while LPAREN expression RPAREN'
-    print(" until " + str(p[5]))
+    PB.append(["if",p[5][3],doindex1+1])
     p[0] = p[5]
 
 
 def p_do(p):
     'do : DO'
+    global doindex1
+    doindex1=len(PB)
     loop.push(p[1])
     # print("p_do")
 
 def p_if_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement'
-    PB.push(["JPF" , p[3][3] ,PB.getLength()+3])
-    PB.push(p[3])
+    PB.insert(index1 + 1, ["JPF", p[3][3], len(PB) + 2])
     increment_label_number()
-    p[0] = p[5]
     # print("p_if_stmt")
 
 def p_elif_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement else statement'
-    PB.push(["JPF", p[3][3], PB.getLength() +2])
-    PB.push(p[3])
+    PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
+    t= len(PB) - index2
+    PB.insert(len(PB)-t,["jp",len(PB)+2,])
     increment_label_number()
-    if_else=False
-    p[0] = p[5]
-    p[0] = (p[5], p[7])
     # print("p_elif_stmt")
 
 
 def p_if(p):
     'if : IF'
-    if_index1=PB.getLength()
+    global index1
+    index1=len(PB)
     # print("p_if")
 
 
 def p_else(p):
     'else : ELSE '
-    global if_else
-    if_else = True
-    PB.push_to(["jp",PB.getLength()+5,], index1)
-    name="else"
+    global index2
+    index2 = len(PB) + 1
+    # name="else"
     print("p_else")
 
 
 def p_while_stmt(p):
     '''while_stmt : while LPAREN expression RPAREN statement'''
-    # generate_code_if_else()
-    PB.push(p[3])
-    PB.push_to(["if",p[3][3],p[1]+1],p[1])
+    PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 2])
     loop.pop()
     print("p_while_stmt",id(p[1]))
 
@@ -539,19 +524,34 @@ def p_while_stmt(p):
 def p_while(p):
     'while : WHILE'
     loop.push(p[1])
-    p[0]=PB.getLength()
+    global windex1
+    windex1=len(PB)
     print("p_while",id(p[0]))
 
-
+forindex1=0
+forindex2=0
 def p_for_stmt(p):
-    '''for_stmt : for LPAREN var_declaration expression SEMICOLON expression RPAREN statement'''
+    '''for_stmt : for LPAREN var_declaration expression semicolon expression epsilon RPAREN statement'''
+    PB.insert(forindex1,['jpf',p[4][4],len(PB)])
+
     p[0] = p[8]
     loop.pop()
     print("p_for_stmt")
 
+def p_semicolon(p):
+    'semicolon : SEMICOLON'
+    global forindex1
+    forindex1 = len(PB)
+
+def p_epsilon(p):
+    'epsilon :'
+    global forindex2
+    forindex2=len(PB)
 
 def p_for(p):
     'for : FOR'
+    global  index1
+    index1=len(PB)
     loop.push(p[1])
     print("p_for")
 
@@ -575,11 +575,7 @@ def p_expression(p):
       '''
     check_assign_table(p[1])
     if p[2] == '=':
-        if (if_else):
-            p[0]=if_else_generate_code('=', p[3], p[1], index1)
-        else:
-            p[0]=generate_code('=',p[1], p[3],)
-        # PB.push([p[1], '=', p[3]])
+        p[0]=generate_code('=',p[1], p[3],)
     elif p[2] == '++':
         p[0] = ('+', p[1], 1)
     elif p[2] == '--':
@@ -649,7 +645,9 @@ def p_unary_rel_expression(p):
 
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
-    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
+    p[0]=[p[2], p[1], p[3], 'temp' + str(counterU)]
+    if_index1=len(PB)
     addU_one()
     # generate_code(p[2], p[1], p[3])
     print("p_rel_expression")
@@ -675,10 +673,7 @@ def p_relop(p):
 def p_add_expression(p):
     '''add_expression : add_expression addop term '''
     addU_one()
-    if (if_else):
-        if_else_generate_code(p[2], p[1], p[3], index1)
-    else:
-        p[0] = generate_code(p[2], p[1], p[3])
+    p[0] = generate_code(p[2], p[1], p[3])
     print("p_add_expression")
 
 
@@ -698,9 +693,7 @@ def p_addop(p):
 
 def p_term(p):
     'term : term mulop unary_expression '
-    if(if_else):
-        if_else_generate_code(p[2], p[1], p[3], index1)
-    else:p[0] = generate_code(p[2], p[1], p[3])
+    p[0] = generate_code(p[2], p[1], p[3])
     print("p_term")
 
 
@@ -789,8 +782,8 @@ if __name__ == "__main__":
     res = yacc.parse(data)
     print("********************************************************\n")
     k=0
-    while not PB.isEmpty():
+    for m in PB:
         k+=1
-        print((k),PB.pop(), "\n")
+        print((k),m, "\n")
     print((k+1),"halt")
     print("********************************************************\n")

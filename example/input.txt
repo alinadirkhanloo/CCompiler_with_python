@@ -1,6 +1,6 @@
 int n=0;
 int m (){
-    while(n==6){
+    do{
         n=5+9*8;
-    }
+    }while(n<8)
 }
