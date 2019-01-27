@@ -1,6 +1,7 @@
 import yacc as yacc
 import lex as lex
 
+
 #
 class Stack:
     def __init__(self):
@@ -9,8 +10,8 @@ class Stack:
     def push(self, item):
         self.items.append(item)
 
-    def push_to(self, item,index):
-        self.items.insert(index,item)
+    def push_to(self, item, index):
+        self.items.insert(index, item)
 
     def pop(self):
         return self.items.pop()
@@ -18,7 +19,7 @@ class Stack:
     def isEmpty(self):
         return (self.items == [])
 
-    def remove(self,index):
+    def remove(self, index):
         self.items.remove(index)
 
     def getLength(self):
@@ -28,16 +29,16 @@ class Stack:
 symbolTable = []
 semnticstack = Stack()
 typestack = Stack()
-PB =[]
+PB = []
 loop = Stack()
 i = []
 u = []
 tb = 0
 sc = []
-index1=0
-index2=0
-doindex1=0
-windex=0
+index1 = 0
+index2 = 0
+doindex1 = 0
+windex = 0
 reserved = {
     'if': 'IF',
     'else': 'ELSE',
@@ -53,36 +54,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-    'LESS',
-    'LARGE',
-    'ASSIGN',
-    'PLUS_ASSIGN',
-    'MINUS_ASSIGN',
-    'TIMES_ASSIGN',
-    'DIVIDE_ASSIGN',
-    'NUMBER',
-    'FLOAT_NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'OBRACELET',
-    'CBRACELET',
-    'ID',
-    'EQUALS',
-    'SEMICOLON',
-    'LESSTHAN',
-    'LARGETHAN',
-    'NOTEQUAL',
-    'COMMA',
-    'OPENBR',
-    'CLOSEBR',
-    'AND',
-    'PLUSPLUS',
-    'MINUSMINUS'
-) + tuple(reserved.values())
+             'LESS',
+             'LARGE',
+             'ASSIGN',
+             'PLUS_ASSIGN',
+             'MINUS_ASSIGN',
+             'TIMES_ASSIGN',
+             'DIVIDE_ASSIGN',
+             'NUMBER',
+             'FLOAT_NUMBER',
+             'PLUS',
+             'MINUS',
+             'TIMES',
+             'DIVIDE',
+             'LPAREN',
+             'RPAREN',
+             'OBRACELET',
+             'CBRACELET',
+             'ID',
+             'EQUALS',
+             'SEMICOLON',
+             'LESSTHAN',
+             'LARGETHAN',
+             'NOTEQUAL',
+             'COMMA',
+             'OPENBR',
+             'CLOSEBR',
+             'AND',
+             'PLUSPLUS',
+             'MINUSMINUS'
+         ) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -113,7 +114,7 @@ t_ignore = ' \t'
 counter = 0
 counterU = 1
 label_number = 0
-if_else=False
+if_else = False
 
 
 def add_one():
@@ -177,9 +178,9 @@ def t_STRING(t):
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
-    if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
+    if t.type == 'INT' or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
-    if t.type == 'ID'and not typestack.isEmpty():
+    if t.type == 'ID' and not typestack.isEmpty():
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
     else:
@@ -190,14 +191,12 @@ def t_ID(t):
 def t_FLOAT_NUMBER(t):
     r'[0-9]+\.[0-9]+'
     t.value = float(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
 
 def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
 
@@ -215,7 +214,7 @@ def check_table(ch, le):
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
-                count += 1
+                count += 1  # For what?????
                 if [le] >= m[3:4]:
                     n += 1
                 if n >= 2:
@@ -231,7 +230,6 @@ def check_assign_table(ch):
                 count += 1
     if count == 1:
         print(ch, " not defined before  ")
-        exit(1)
 
 
 def typecheck(ch1, ch2):
@@ -315,7 +313,7 @@ def p_var_declaration(p):
         print(" void cant use for thisssssssssssssssssssss")
         exit(1)
     typecheck(p[1], p[2])
-    p[0]=p[2]
+    p[0] = p[2]
     print("p_var_declaration", p[1], p[2])
 
 
@@ -357,7 +355,7 @@ def p_var_decl_ids(p):
     check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
-    PB.append([p[2],p[3],p[1]])
+    PB.append([p[2], p[3], p[1]])
     print("p_var_decl_id_other")
 
 
@@ -473,16 +471,17 @@ def p_expression_stmt_eps(p):
 
 def p_do_while_stmt(p):
     'do_while_stmt : do statement while LPAREN expression RPAREN'
-    PB.append(["if",p[5][3],doindex1+1])
+    PB.append(["if", p[5][3], doindex1 + 1])
     p[0] = p[5]
 
 
 def p_do(p):
     'do : DO'
     global doindex1
-    doindex1=len(PB)
+    doindex1 = len(PB)
     loop.push(p[1])
     # print("p_do")
+
 
 def p_if_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement'
@@ -490,11 +489,12 @@ def p_if_stmt(p):
     increment_label_number()
     # print("p_if_stmt")
 
+
 def p_elif_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
-    t= len(PB) - index2
-    PB.insert(len(PB)-t,["jp",len(PB)+2,])
+    t = len(PB) - index2
+    PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
     increment_label_number()
     # print("p_elif_stmt")
 
@@ -502,7 +502,7 @@ def p_elif_stmt(p):
 def p_if(p):
     'if : IF'
     global index1
-    index1=len(PB)
+    index1 = len(PB)
     # print("p_if")
 
 
@@ -518,40 +518,46 @@ def p_while_stmt(p):
     '''while_stmt : while LPAREN expression RPAREN statement'''
     PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 2])
     loop.pop()
-    print("p_while_stmt",id(p[1]))
+    print("p_while_stmt", id(p[1]))
 
 
 def p_while(p):
     'while : WHILE'
     loop.push(p[1])
     global windex1
-    windex1=len(PB)
-    print("p_while",id(p[0]))
+    windex1 = len(PB)
+    print("p_while", id(p[0]))
 
-forindex1=0
-forindex2=0
+
+forindex1 = 0
+forindex2 = 0
+
+
 def p_for_stmt(p):
     '''for_stmt : for LPAREN var_declaration expression semicolon expression epsilon RPAREN statement'''
-    PB.insert(forindex1,['jpf',p[4][4],len(PB)])
+    PB.insert(forindex1, ['jpf', p[4][4], len(PB)])
 
     p[0] = p[8]
     loop.pop()
     print("p_for_stmt")
+
 
 def p_semicolon(p):
     'semicolon : SEMICOLON'
     global forindex1
     forindex1 = len(PB)
 
+
 def p_epsilon(p):
     'epsilon :'
     global forindex2
-    forindex2=len(PB)
+    forindex2 = len(PB)
+
 
 def p_for(p):
     'for : FOR'
-    global  index1
-    index1=len(PB)
+    global index1
+    index1 = len(PB)
     loop.push(p[1])
     print("p_for")
 
@@ -575,7 +581,7 @@ def p_expression(p):
       '''
     check_assign_table(p[1])
     if p[2] == '=':
-        p[0]=generate_code('=',p[1], p[3],)
+        p[0] = generate_code('=', p[1], p[3], )
     elif p[2] == '++':
         p[0] = ('+', p[1], 1)
     elif p[2] == '--':
@@ -646,8 +652,8 @@ def p_unary_rel_expression(p):
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
     PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
-    p[0]=[p[2], p[1], p[3], 'temp' + str(counterU)]
-    if_index1=len(PB)
+    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    if_index1 = len(PB)
     addU_one()
     # generate_code(p[2], p[1], p[3])
     print("p_rel_expression")
@@ -781,9 +787,9 @@ if __name__ == "__main__":
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
-    k=0
+    k = 0
     for m in PB:
-        k+=1
-        print((k),m, "\n")
-    print((k+1),"halt")
+        k += 1
+        print((k), m, "\n")
+    print((k + 1), "halt")
     print("********************************************************\n")
