@@ -180,6 +180,7 @@ def t_ID(t):
     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
     if t.type == 'ID'and not typestack.isEmpty():
+        check_table(t.value, counter)
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
     else:
@@ -211,15 +212,13 @@ precedence = (
 
 def check_table(ch, le):
     n = 0
-    count = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
-                count += 1
                 if [le] >= m[3:4]:
                     n += 1
-                if n >= 2:
-                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ")
+                if n >= 1:
+                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ",le)
                     exit(1)
 
 
@@ -343,7 +342,7 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    check_table(p[1], counter)
+    # check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_id_other")
@@ -354,7 +353,7 @@ def p_var_decl_ids(p):
         | ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    check_table(p[1], counter)
+    # check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
     PB.append([p[2],p[3],p[1]])
@@ -532,7 +531,13 @@ forindex1=0
 forindex2=0
 def p_for_stmt(p):
     '''for_stmt : for LPAREN var_declaration expression semicolon expression epsilon RPAREN statement'''
-    PB.insert(forindex1,['jpf',p[4][4],len(PB)])
+    m=forindex1
+    while (forindex2-m>0):
+        PB.append(PB.pop(forindex1))
+        m+=1
+
+    PB.insert(forindex1,['jpf',p[4][3],len(PB)+3])
+    PB.append(['jp',forindex2-1,])
 
     p[0] = p[8]
     loop.pop()
@@ -550,8 +555,8 @@ def p_epsilon(p):
 
 def p_for(p):
     'for : FOR'
-    global  index1
-    index1=len(PB)
+    global  forindex3
+    forindex3=len(PB)
     loop.push(p[1])
     print("p_for")
 
