@@ -177,6 +177,7 @@ def t_ID(t):
     t.type = reserved.get(t.value, 'ID')
     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
+        return t
     if t.type == 'ID'and not typestack.isEmpty():
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
@@ -209,11 +210,9 @@ precedence = (
 
 def check_table(ch, le):
     n = 0
-    count = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
-                count += 1
                 if [le] >= m[3:4]:
                     n += 1
                 if n >= 2:

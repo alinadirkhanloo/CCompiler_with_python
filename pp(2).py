@@ -1,7 +1,6 @@
 import yacc as yacc
 import lex as lex
 
-#
 class Stack:
     def __init__(self):
         self.items = []
@@ -9,31 +8,20 @@ class Stack:
     def push(self, item):
         self.items.append(item)
 
-    def push_to(self, item,index):
-        self.items.insert(index,item)
-
     def pop(self):
         return self.items.pop()
 
     def isEmpty(self):
         return (self.items == [])
 
-    def remove(self,index):
-        self.items.remove(index)
-
     def getLength(self):
         return self.items.__len__()
-
 
 symbolTable = []
 semnticstack = Stack()
 typestack = Stack()
 PB =[]
 loop = Stack()
-i = []
-u = []
-tb = 0
-sc = []
 index1=0
 index2=0
 doindex1=0
@@ -113,6 +101,7 @@ t_ignore = ' \t'
 counter = 0
 counterU = 1
 label_number = 0
+line_number=1
 if_else=False
 
 
@@ -149,6 +138,8 @@ def decrement_label_number():
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    global line_number
+    line_number+=1
 
 
 def t_OBRACELET(t):
@@ -179,11 +170,11 @@ def t_ID(t):
     t.type = reserved.get(t.value, 'ID')
     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
+        return t
     if t.type == 'ID'and not typestack.isEmpty():
-        check_table(t.value, counter)
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
-    else:
+    elif t.type == 'ID':
         symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
@@ -215,8 +206,8 @@ def check_table(ch, le):
             if ch in m[1:2]:
                 if [le] >= m[3:4]:
                     n += 1
-                if n >= 1:
-                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ",le)
+                if n >= 2:
+                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ",line_number)
                     exit(1)
 
 
@@ -227,7 +218,7 @@ def check_assign_table(ch):
             if ch in m[1:2]:
                 count += 1
     if count == 1:
-        print(ch, " not defined before  ")
+        print(ch, " not defined before  line number ",line_number)
         exit(1)
 
 
@@ -248,19 +239,20 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
                 print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
-                      ch2, "cant be string")
+                      ch2, "cant be string","line number ",line_number)
                 exit(1)
+
 
 
 def generate_code(action, p1, p3):
@@ -340,7 +332,7 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    # check_table(p[1], counter)
+    check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_id_other")
@@ -351,7 +343,7 @@ def p_var_decl_ids(p):
         | ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    # check_table(p[1], counter)
+    check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
     PB.append([p[2],p[3],p[1]])
@@ -702,7 +694,6 @@ def p_term(p):
 
 def p_term_unary(p):
     'term : unary_expression'
-    u.append(1)
     p[0] = p[1]
     print("p_term_unary")
 
@@ -785,8 +776,8 @@ if __name__ == "__main__":
     res = yacc.parse(data)
     print("********************************************************\n")
     k=0
-    for m in PB:
+    for m in symbolTable:
         k+=1
-        print((k),m, "\n")
+        print(m, "\n")
     print((k+1),"halt")
     print("********************************************************\n")
