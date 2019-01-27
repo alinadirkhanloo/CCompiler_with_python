@@ -162,6 +162,24 @@ def t_STRING(t):
     return t
 
 
+# def t_ID(t):
+#     r'[a-zA-Z_][a-zA-Z_0-9]*'
+#     t.type = reserved.get(t.value, 'ID')
+#     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
+#         typestack.push(t.type)
+#         return t
+#     if t.type == 'ID'and not typestack.isEmpty():
+#         # if(check_table(t.value, counter)):
+#         symbolTable.append(
+#                 [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
+#         # else:symbolTable.append(
+#         #         [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
+#     else:
+#         symbolTable.append(
+#             [t.type, t.value, id(t.value) + counter, counter,'none'])
+#     return t
+
+
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
@@ -169,14 +187,10 @@ def t_ID(t):
         typestack.push(t.type)
         return t
     if t.type == 'ID'and not typestack.isEmpty():
-        if(check_table(t.value, counter)):
-            symbolTable.append(
-                [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
-        else:symbolTable.append(
-                [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
-    else:
         symbolTable.append(
-            [t.type, t.value, id(t.value) + counter, counter,'none'])
+            [t.type, t.value, id(t.value), counter, typestack.pop()])
+    else:
+        symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
 
@@ -202,21 +216,31 @@ precedence = (
 )
 
 
+# def check_table(ch, le):
+#     n = 0
+#     other_scop=False
+#     for m in symbolTable:
+#         if m[0:1] == ['ID']:
+#             if ch in m[1:2]:
+#                 if [le] > m[3:4]:
+#                     other_scop=True
+#                 elif [le] == m[3:4]:
+#                     n += 1
+#                 if n >= 1:
+#                     print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ",le)
+#                     # exit(1)
+#     return other_scop
+
 def check_table(ch, le):
     n = 0
-    other_scop=False
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
-                if [le] > m[3:4]:
-                    other_scop=True
-                elif [le] == m[3:4]:
+                if [le] >= m[3:4]:
                     n += 1
-                if n >= 1:
-                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ",le)
-                    # exit(1)
-    return other_scop
-
+                if n >= 2:
+                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ")
+                    exit(1)
 
 def check_assign_table(ch):
     count = 0
@@ -338,7 +362,7 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    # check_table(p[1], counter)
+    check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_id_other")
@@ -349,7 +373,7 @@ def p_var_decl_ids(p):
         | ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    # check_table(p[1], counter)
+    check_table(p[1], counter)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
     PB.append([p[2],p[3],p[1]])
@@ -367,7 +391,7 @@ def p_type_specifier(p):
 
 def p_fun_declaration(p):
     '''fun_declaration : type_specifier ID LPAREN params RPAREN statement'''
-    # check_table(p[2], counter)
+    check_table(p[2], counter)
     semnticstack.push(id(p[2]))
     p[0] = p[6]
     print("function " + p[1])
