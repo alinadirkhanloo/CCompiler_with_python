@@ -191,14 +191,12 @@ def t_ID(t):
 def t_FLOAT_NUMBER(t):
     r'[0-9]+\.[0-9]+'
     t.value = float(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
 
 def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
 

@@ -1,5 +1,4 @@
 int n=0;
-int n=9;
 int m (){
     if(n>7){
         n=9*34+4;
