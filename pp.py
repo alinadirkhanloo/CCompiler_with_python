@@ -209,11 +209,9 @@ precedence = (
 
 def check_table(ch, le):
     n = 0
-    count = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
-                count += 1
                 if [le] >= m[3:4]:
                     n += 1
                 if n >= 2:
