@@ -101,6 +101,7 @@ t_ignore = ' \t'
 counter = 0
 counterU = 1
 label_number = 0
+line_number=1
 if_else=False
 
 
@@ -137,6 +138,8 @@ def decrement_label_number():
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    global line_number
+    line_number+=1
 
 
 def t_OBRACELET(t):
@@ -162,24 +165,6 @@ def t_STRING(t):
     return t
 
 
-# def t_ID(t):
-#     r'[a-zA-Z_][a-zA-Z_0-9]*'
-#     t.type = reserved.get(t.value, 'ID')
-#     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
-#         typestack.push(t.type)
-#         return t
-#     if t.type == 'ID'and not typestack.isEmpty():
-#         # if(check_table(t.value, counter)):
-#         symbolTable.append(
-#                 [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
-#         # else:symbolTable.append(
-#         #         [t.type, t.value, id(t.value)+counter, counter, typestack.pop()])
-#     else:
-#         symbolTable.append(
-#             [t.type, t.value, id(t.value) + counter, counter,'none'])
-#     return t
-
-
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
@@ -189,7 +174,7 @@ def t_ID(t):
     if t.type == 'ID'and not typestack.isEmpty():
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
-    else:
+    elif t.type == 'ID':
         symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
     return t
 
@@ -216,21 +201,6 @@ precedence = (
 )
 
 
-# def check_table(ch, le):
-#     n = 0
-#     other_scop=False
-#     for m in symbolTable:
-#         if m[0:1] == ['ID']:
-#             if ch in m[1:2]:
-#                 if [le] > m[3:4]:
-#                     other_scop=True
-#                 elif [le] == m[3:4]:
-#                     n += 1
-#                 if n >= 1:
-#                     print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ",le)
-#                     # exit(1)
-#     return other_scop
-
 def check_table(ch, le):
     n = 0
     for m in symbolTable:
@@ -239,8 +209,9 @@ def check_table(ch, le):
                 if [le] >= m[3:4]:
                     n += 1
                 if n >= 2:
-                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope ")
+                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ",line_number)
                     exit(1)
+
 
 def check_assign_table(ch):
     count = 0
@@ -248,8 +219,8 @@ def check_assign_table(ch):
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
                 count += 1
-    if count == 0:
-        print(ch, " not defined before  ")
+    if count == 1:
+        print(ch, " not defined before  line number ",line_number)
         exit(1)
 
 
@@ -270,19 +241,20 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
                 print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
-                      ch2, "cant be string")
+                      ch2, "cant be string","line number ",line_number)
                 exit(1)
+
 
 
 def generate_code(action, p1, p3):

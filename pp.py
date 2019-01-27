@@ -177,6 +177,7 @@ def t_ID(t):
     t.type = reserved.get(t.value, 'ID')
     if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
+        return t
     if t.type == 'ID'and not typestack.isEmpty():
         symbolTable.append(
             [t.type, t.value, id(t.value), counter, typestack.pop()])
