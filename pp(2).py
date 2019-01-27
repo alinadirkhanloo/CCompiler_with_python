@@ -564,7 +564,7 @@ def p_break_stmt(p):
 def p_expression(p):
     ''' expression : var ASSIGN expression
       | var addopration_expression expression
-      | var mulopration_expression expression 
+      | var mulopration_expression expression
       | ID PLUSPLUS
       | ID MINUSMINUS
       '''
@@ -718,9 +718,9 @@ def p_unary_expression_fact(p):
 
 
 def p_factor(p):
-    '''factor : LPAREN expression RPAREN 
-    | var 
-    | call 
+    '''factor : LPAREN expression RPAREN
+    | var
+    | call
     | constant'''
     if p[1] == '(':
         p[0] = (p[2])
@@ -730,7 +730,7 @@ def p_factor(p):
 
 
 def p_constant(p):
-    '''constant : TRUE 
+    '''constant : TRUE
     | FALSE'''
     p[0] = p[1]
     print("p_constant")
