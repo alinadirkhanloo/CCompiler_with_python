@@ -108,19 +108,19 @@ t_OPENBR = r'\['
 t_CLOSEBR = r'\]'
 t_ignore = ' \t'
 
-counter = 0
+scope_number = 0
 counterU = 1
 label_number = 0
 if_else=False
 
 
 def add_one():
-    global counter
+    global scope_number
     counter += 1
 
 
 def remove_one():
-    global counter
+    global scope_number
     counter -= 1
 
 
@@ -168,7 +168,7 @@ def t_error(t):
 
 def t_STRING(t):
     r'"[a-zA-Z_0-9]*"'
-    symbolTable.append([t.type, t.value, id(t.value), counter])
+    symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
@@ -180,23 +180,23 @@ def t_ID(t):
         return t
     if t.type == 'ID'and not typestack.isEmpty():
         symbolTable.append(
-            [t.type, t.value, id(t.value), counter, typestack.pop()])
+            [t.type, t.value, id(t.value), scope_number, typestack.pop()])
     else:
-        symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
+        symbolTable.append([t.type, t.value, id(t.value), scope_number, 'none'])
     return t
 
 
 def t_FLOAT_NUMBER(t):
     r'[0-9]+\.[0-9]+'
     t.value = float(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
+    symbolTable.append([t.type, t.value, id(t.value), scope_number, 'none'])
     return t
 
 
 def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
-    symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
+    symbolTable.append([t.type, t.value, id(t.value), scope_number, 'none'])
     return t
 
 
@@ -237,7 +237,7 @@ def typecheck(ch1, ch2):
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch2 in m[1:2]:
-                if [counter] <= m[3:4]:
+                if [scope_number] <= m[3:4]:
                     type2 = m[4:5]
                     break
     for m in symbolTable:
@@ -353,7 +353,7 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    check_table(p[1], counter)
+    check_table(p[1], scope_number)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_id_other")
@@ -364,7 +364,7 @@ def p_var_decl_ids(p):
         | ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    check_table(p[1], counter)
+    check_table(p[1], scope_number)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
 
@@ -382,7 +382,7 @@ def p_type_specifier(p):
 
 def p_fun_declaration(p):
     '''fun_declaration : type_specifier ID LPAREN params RPAREN statement'''
-    check_table(p[2], counter)
+    check_table(p[2], scope_number)
     semnticstack.push(id(p[2]))
     p[0] = p[6]
     print("function " + p[1])
@@ -447,7 +447,7 @@ def p_local_declarations_eps(p):
 
 def p_statement_list(p):
     'statement_list : statement statement_list'
-    print("p_statement_list", counter)
+    print("p_statement_list", scope_number)
 
 
 def p_statement_list_eps(p):
@@ -463,7 +463,7 @@ def p_statement(p):
     | for_stmt
     | do_while_stmt
     | break_stmt'''
-    if counter == 0:
+    if scope_number == 0:
         p[0] = 'halt'
     else:
         p[0] = p[1]
