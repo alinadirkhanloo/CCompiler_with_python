@@ -1,6 +1,9 @@
+int x=0;
 int n=0;
 int m (){
-    if(n>5){
+    if(x>5){
+    int n=4;
     n=9/8+4;
     }
+    n=5;
  }

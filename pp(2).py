@@ -1,6 +1,7 @@
 import yacc as yacc
 import lex as lex
 
+
 class Stack:
     def __init__(self):
         self.items = []
@@ -17,15 +18,23 @@ class Stack:
     def getLength(self):
         return self.items.__len__()
 
+    def getPeek(self):
+        if self.items.__len__()>0:
+            return self.items.__getitem__(self.items.__len__() - 1)
+        else:
+            return "none"
+
+
 symbolTable = []
 semnticstack = Stack()
 typestack = Stack()
-PB =[]
+scope_stack = Stack()
+PB = []
 loop = Stack()
-index1=0
-index2=0
-doindex1=0
-windex=0
+index1 = 0
+index2 = 0
+doindex1 = 0
+windex = 0
 reserved = {
     'if': 'IF',
     'else': 'ELSE',
@@ -41,36 +50,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-    'LESS',
-    'LARGE',
-    'ASSIGN',
-    'PLUS_ASSIGN',
-    'MINUS_ASSIGN',
-    'TIMES_ASSIGN',
-    'DIVIDE_ASSIGN',
-    'NUMBER',
-    'FLOAT_NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'OBRACELET',
-    'CBRACELET',
-    'ID',
-    'EQUALS',
-    'SEMICOLON',
-    'LESSTHAN',
-    'LARGETHAN',
-    'NOTEQUAL',
-    'COMMA',
-    'OPENBR',
-    'CLOSEBR',
-    'AND',
-    'PLUSPLUS',
-    'MINUSMINUS'
-) + tuple(reserved.values())
+             'LESS',
+             'LARGE',
+             'ASSIGN',
+             'PLUS_ASSIGN',
+             'MINUS_ASSIGN',
+             'TIMES_ASSIGN',
+             'DIVIDE_ASSIGN',
+             'NUMBER',
+             'FLOAT_NUMBER',
+             'PLUS',
+             'MINUS',
+             'TIMES',
+             'DIVIDE',
+             'LPAREN',
+             'RPAREN',
+             'OBRACELET',
+             'CBRACELET',
+             'ID',
+             'EQUALS',
+             'SEMICOLON',
+             'LESSTHAN',
+             'LARGETHAN',
+             'NOTEQUAL',
+             'COMMA',
+             'OPENBR',
+             'CLOSEBR',
+             'AND',
+             'PLUSPLUS',
+             'MINUSMINUS'
+         ) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -98,21 +107,21 @@ t_OPENBR = r'\['
 t_CLOSEBR = r'\]'
 t_ignore = ' \t'
 
-counter = 0
+scope_number = 0
 counterU = 1
 label_number = 0
-line_number=1
-if_else=False
+line_number = 1
+if_else = False
 
 
 def add_one():
-    global counter
-    counter += 1
+    global scope_number
+    scope_number += 1
 
 
 def remove_one():
-    global counter
-    counter -= 1
+    global scope_number
+    scope_number -= 1
 
 
 def addU_one():
@@ -139,7 +148,7 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
     global line_number
-    line_number+=1
+    line_number += 1
 
 
 def t_OBRACELET(t):
@@ -161,21 +170,22 @@ def t_error(t):
 
 def t_STRING(t):
     r'"[a-zA-Z_0-9]*"'
-    symbolTable.append([t.type, t.value, id(t.value), counter])
+    symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
-    if t.type == 'INT'or t.type == 'STRING' or t.type == 'FLOAT':
+    if t.type == 'INT' or t.type == 'STRING' or t.type == 'FLOAT':
         typestack.push(t.type)
         return t
-    if t.type == 'ID'and not typestack.isEmpty():
-        symbolTable.append(
-            [t.type, t.value, id(t.value), counter, typestack.pop()])
-    elif t.type == 'ID':
-        symbolTable.append([t.type, t.value, id(t.value), counter, 'none'])
+
+    result = check_table(t.value, scope_number, typestack.getPeek())
+
+    if t.type == 'ID' and not typestack.isEmpty():
+        if result == 0:
+            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop()])
     return t
 
 
@@ -199,26 +209,30 @@ precedence = (
 )
 
 
-def check_table(ch, le):
+def check_table(ch, le, variable_type):
     n = 0
+    result = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
                 if [le] >= m[3:4]:
-                    n += 1
-                if n >= 2:
-                    print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ",line_number)
-                    exit(1)
+                    if variable_type == "none":
+                        return 1
+                    else:
+                        print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ", line_number)
+                        exit(1)
+
+    return result
 
 
 def check_assign_table(ch):
     count = 0
     for m in symbolTable:
-        if m[0:1] == ['ID']:
-            if ch in m[1:2]:
-                count += 1
-    if count == 1:
-        print(ch, " not defined before  line number ",line_number)
+        if ch in m[1:2]:
+            if [scope_number] >= m[3:4]:
+                count = 1
+    if count == 0:
+        print(ch, " not defined before  line number ", line_number)
         exit(1)
 
 
@@ -228,7 +242,7 @@ def typecheck(ch1, ch2):
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch2 in m[1:2]:
-                if [counter] <= m[3:4]:
+                if [scope_number] <= m[3:4]:
                     type2 = m[4:5]
                     break
     for m in symbolTable:
@@ -239,20 +253,19 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1,"line number ",line_number)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
                 print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
-                      ch2, "cant be string","line number ",line_number)
+                      ch2, "cant be string", "line number ", line_number)
                 exit(1)
-
 
 
 def generate_code(action, p1, p3):
@@ -304,7 +317,7 @@ def p_var_declaration(p):
         print(" void cant use for thisssssssssssssssssssss")
         exit(1)
     typecheck(p[1], p[2])
-    p[0]=p[2]
+    p[0] = p[2]
     print("p_var_declaration", p[1], p[2])
 
 
@@ -332,7 +345,7 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    check_table(p[1], counter)
+    # check_table(p[1], scope_number)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_id_other")
@@ -343,10 +356,10 @@ def p_var_decl_ids(p):
         | ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    check_table(p[1], counter)
+    # check_table(p[1], scope_number)
     semnticstack.push(id(p[1]))
     p[0] = p[3]
-    PB.append([p[2],p[3],p[1]])
+    PB.append([p[2], p[3], p[1]])
     print("p_var_decl_id_other")
 
 
@@ -361,7 +374,7 @@ def p_type_specifier(p):
 
 def p_fun_declaration(p):
     '''fun_declaration : type_specifier ID LPAREN params RPAREN statement'''
-    check_table(p[2], counter)
+    # check_table(p[2], scope_number)
     semnticstack.push(id(p[2]))
     p[0] = p[6]
     print("function " + p[1])
@@ -426,7 +439,7 @@ def p_local_declarations_eps(p):
 
 def p_statement_list(p):
     'statement_list : statement statement_list'
-    print("p_statement_list", counter)
+    print("p_statement_list", scope_number)
 
 
 def p_statement_list_eps(p):
@@ -442,7 +455,7 @@ def p_statement(p):
     | for_stmt
     | do_while_stmt
     | break_stmt'''
-    if counter == 0:
+    if scope_number == 0:
         p[0] = 'halt'
     else:
         p[0] = p[1]
@@ -462,16 +475,17 @@ def p_expression_stmt_eps(p):
 
 def p_do_while_stmt(p):
     'do_while_stmt : do statement while LPAREN expression RPAREN'
-    PB.append(["if",p[5][3],doindex1+1])
+    PB.append(["if", p[5][3], doindex1 + 1])
     p[0] = p[5]
 
 
 def p_do(p):
     'do : DO'
     global doindex1
-    doindex1=len(PB)
+    doindex1 = len(PB)
     loop.push(p[1])
     # print("p_do")
+
 
 def p_if_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement'
@@ -479,11 +493,12 @@ def p_if_stmt(p):
     increment_label_number()
     # print("p_if_stmt")
 
+
 def p_elif_stmt(p):
     'if_stmt : if LPAREN expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
-    t= len(PB) - index2
-    PB.insert(len(PB)-t,["jp",len(PB)+2,])
+    t = len(PB) - index2
+    PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
     increment_label_number()
     # print("p_elif_stmt")
 
@@ -491,7 +506,7 @@ def p_elif_stmt(p):
 def p_if(p):
     'if : IF'
     global index1
-    index1=len(PB)
+    index1 = len(PB)
     # print("p_if")
 
 
@@ -507,46 +522,52 @@ def p_while_stmt(p):
     '''while_stmt : while LPAREN expression RPAREN statement'''
     PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 2])
     loop.pop()
-    print("p_while_stmt",id(p[1]))
+    print("p_while_stmt", id(p[1]))
 
 
 def p_while(p):
     'while : WHILE'
     loop.push(p[1])
     global windex1
-    windex1=len(PB)
-    print("p_while",id(p[0]))
+    windex1 = len(PB)
+    print("p_while", id(p[0]))
 
-forindex1=0
-forindex2=0
+
+forindex1 = 0
+forindex2 = 0
+
+
 def p_for_stmt(p):
     '''for_stmt : for LPAREN var_declaration expression semicolon expression epsilon RPAREN statement'''
-    m=forindex1
-    while (forindex2-m>0):
+    m = forindex1
+    while (forindex2 - m > 0):
         PB.append(PB.pop(forindex1))
-        m+=1
+        m += 1
 
-    PB.insert(forindex1,['jpf',p[4][3],len(PB)+3])
-    PB.append(['jp',forindex2-1,])
+    PB.insert(forindex1, ['jpf', p[4][3], len(PB) + 3])
+    PB.append(['jp', forindex2 - 1, ])
 
     p[0] = p[8]
     loop.pop()
     print("p_for_stmt")
+
 
 def p_semicolon(p):
     'semicolon : SEMICOLON'
     global forindex1
     forindex1 = len(PB)
 
+
 def p_epsilon(p):
     'epsilon :'
     global forindex2
-    forindex2=len(PB)
+    forindex2 = len(PB)
+
 
 def p_for(p):
     'for : FOR'
-    global  forindex3
-    forindex3=len(PB)
+    global forindex3
+    forindex3 = len(PB)
     loop.push(p[1])
     print("p_for")
 
@@ -564,13 +585,13 @@ def p_break_stmt(p):
 def p_expression(p):
     ''' expression : var ASSIGN expression
       | var addopration_expression expression
-      | var mulopration_expression expression 
+      | var mulopration_expression expression
       | ID PLUSPLUS
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
     if p[2] == '=':
-        p[0]=generate_code('=',p[1], p[3],)
+        p[0] = generate_code('=', p[1], p[3], )
     elif p[2] == '++':
         p[0] = ('+', p[1], 1)
     elif p[2] == '--':
@@ -641,8 +662,8 @@ def p_unary_rel_expression(p):
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
     PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
-    p[0]=[p[2], p[1], p[3], 'temp' + str(counterU)]
-    if_index1=len(PB)
+    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    if_index1 = len(PB)
     addU_one()
     # generate_code(p[2], p[1], p[3])
     print("p_rel_expression")
@@ -718,9 +739,9 @@ def p_unary_expression_fact(p):
 
 
 def p_factor(p):
-    '''factor : LPAREN expression RPAREN 
-    | var 
-    | call 
+    '''factor : LPAREN expression RPAREN
+    | var
+    | call
     | constant'''
     if p[1] == '(':
         p[0] = (p[2])
@@ -730,7 +751,7 @@ def p_factor(p):
 
 
 def p_constant(p):
-    '''constant : TRUE 
+    '''constant : TRUE
     | FALSE'''
     p[0] = p[1]
     print("p_constant")
@@ -775,9 +796,9 @@ if __name__ == "__main__":
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
-    k=0
+    k = 0
     for m in symbolTable:
-        k+=1
+        k += 1
         print(m, "\n")
-    print((k+1),"halt")
+    print((k + 1), "halt")
     print("****************************************\n")
