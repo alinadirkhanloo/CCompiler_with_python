@@ -164,7 +164,7 @@ def t_CBRACELET(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("message: Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
@@ -219,7 +219,8 @@ def check_table(ch, le, variable_type):
                     if variable_type == "none":
                         return 1
                     else:
-                        print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ", line_number)
+                        print(
+                            "message: ", ch, " this used before in this scope line number ", line_number)
                         exit(1)
 
     return result
@@ -232,7 +233,7 @@ def check_assign_table(ch):
             if [scope_number] >= m[3:4]:
                 count = 1
     if count == 0:
-        print(ch, " not defined before  line number ", line_number)
+        print("message: ",ch, " not defined before  line number ", line_number)
         exit(1)
 
 
@@ -253,17 +254,19 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
+                print("message:  type error ",
+                      ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
+                print("message:  type error ",
+                      ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
+                print("message:  type error ",
                       ch2, "cant be string", "line number ", line_number)
                 exit(1)
 
@@ -314,7 +317,7 @@ def p_declaration_fun(p):
 def p_var_declaration(p):
     '''var_declaration : type_specifier var_decl_list SEMICOLON'''
     if p[1] == 'void':
-        print(" void cant use for thisssssssssssssssssssss")
+        print("message:  void cant use for this")
         exit(1)
     typecheck(p[1], p[2])
     p[0] = p[2]
@@ -323,7 +326,7 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string")
+    print("message:  type error cant be string")
 
 
 def p_var_decl_list_loop(p):
@@ -575,7 +578,7 @@ def p_for(p):
 def p_break_stmt(p):
     'break_stmt : BREAK SEMICOLON'
     if loop.isEmpty():
-        print("semantic error in break !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("message: semantic error in break!")
         exit(1)
     p[0] = p[1]
 
@@ -792,7 +795,7 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open("example/input.txt", "r")
+    file = open("F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")

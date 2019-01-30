@@ -51,8 +51,8 @@ namespace YaccPrj
 
             foreach (var o in result)
             {
-                if (o.Contains("error : "))
-                    myResult.Add(o);
+                if (o.Contains("message: "))
+                    myResult.Add(o.Replace("message: ", ""));
             }          
 
             listBox.ItemsSource = myResult;
