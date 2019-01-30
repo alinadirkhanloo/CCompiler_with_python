@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using BespokeFusion;
 
 namespace YaccPrj
@@ -53,7 +54,13 @@ namespace YaccPrj
             {
                 if (o.Contains("message: "))
                     myResult.Add(o.Replace("message: ", ""));
-            }          
+
+                else if (o.Contains("["))
+                {
+                    myResult.Add(o.Replace("message: ", ""));
+                    listBox.Foreground = Brushes.DarkGreen;
+                }
+            }
 
             listBox.ItemsSource = myResult;
 

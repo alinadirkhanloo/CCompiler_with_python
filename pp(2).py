@@ -19,7 +19,7 @@ class Stack:
         return self.items.__len__()
 
     def getPeek(self):
-        if self.items.__len__()>0:
+        if self.items.__len__() > 0:
             return self.items.__getitem__(self.items.__len__() - 1)
         else:
             return "none"
@@ -50,36 +50,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-             'LESS',
-             'LARGE',
-             'ASSIGN',
-             'PLUS_ASSIGN',
-             'MINUS_ASSIGN',
-             'TIMES_ASSIGN',
-             'DIVIDE_ASSIGN',
-             'NUMBER',
-             'FLOAT_NUMBER',
-             'PLUS',
-             'MINUS',
-             'TIMES',
-             'DIVIDE',
-             'LPAREN',
-             'RPAREN',
-             'OBRACELET',
-             'CBRACELET',
-             'ID',
-             'EQUALS',
-             'SEMICOLON',
-             'LESSTHAN',
-             'LARGETHAN',
-             'NOTEQUAL',
-             'COMMA',
-             'OPENBR',
-             'CLOSEBR',
-             'AND',
-             'PLUSPLUS',
-             'MINUSMINUS'
-         ) + tuple(reserved.values())
+    'LESS',
+    'LARGE',
+    'ASSIGN',
+    'PLUS_ASSIGN',
+    'MINUS_ASSIGN',
+    'TIMES_ASSIGN',
+    'DIVIDE_ASSIGN',
+    'NUMBER',
+    'FLOAT_NUMBER',
+    'PLUS',
+    'MINUS',
+    'TIMES',
+    'DIVIDE',
+    'LPAREN',
+    'RPAREN',
+    'OBRACELET',
+    'CBRACELET',
+    'ID',
+    'EQUALS',
+    'SEMICOLON',
+    'LESSTHAN',
+    'LARGETHAN',
+    'NOTEQUAL',
+    'COMMA',
+    'OPENBR',
+    'CLOSEBR',
+    'AND',
+    'PLUSPLUS',
+    'MINUSMINUS'
+) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -185,7 +185,8 @@ def t_ID(t):
 
     if t.type == 'ID' and not typestack.isEmpty():
         if result == 0:
-            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop()])
+            symbolTable.append([t.type, t.value, id(
+                t.value), scope_number, typestack.pop()])
     return t
 
 
@@ -233,7 +234,7 @@ def check_assign_table(ch):
             if [scope_number] >= m[3:4]:
                 count = 1
     if count == 0:
-        print("message: ",ch, " not defined before  line number ", line_number)
+        print("message: ", ch, " not defined before  line number ", line_number)
         exit(1)
 
 
@@ -795,7 +796,8 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open("F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
+    file = open(
+        "F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
