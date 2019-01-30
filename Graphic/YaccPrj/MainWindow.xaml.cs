@@ -14,7 +14,7 @@ namespace YaccPrj
         {
             InitializeComponent();
 
-            textBox.Text = File.ReadAllText(@"C:\Users\M-H-KARAMI\Desktop\Yacc\example\fff.txt");
+            textBox.Text = File.ReadAllText(@"F:\Project\Python\CCompiler_with_python\example\input.txt");
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -25,7 +25,7 @@ namespace YaccPrj
         private void run_cmd()
         {
 
-            const string fileName = @"C:\Users\M-H-KARAMI\Desktop\Yacc\assign31.py";
+            const string fileName = @"F:\Project\Python\CCompiler_with_python\pp(2).py";
 
             var p = new Process
             {
@@ -62,12 +62,12 @@ namespace YaccPrj
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
-            File.WriteAllText(@"C:\Users\M-H-KARAMI\Desktop\Yacc\example\fff.txt", textBox.Text);
+            File.WriteAllText(@"F:\Project\Python\CCompiler_with_python\example\input.txt", textBox.Text);
         }
 
         private void Button_About_Click(object sender, RoutedEventArgs e)
         {
-            MaterialMessageBox.Show("Sir J0l@n \nSir K@r@m \nG0d 0f Bug", "About");
+            MaterialMessageBox.Show("Sir J0l@n \nSir S0lt@n \nG0d 0f Bug", "About");
         }
     }
 }
