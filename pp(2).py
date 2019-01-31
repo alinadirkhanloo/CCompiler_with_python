@@ -19,7 +19,7 @@ class Stack:
         return self.items.__len__()
 
     def getPeek(self):
-        if self.items.__len__()>0:
+        if self.items.__len__() > 0:
             return self.items.__getitem__(self.items.__len__() - 1)
         else:
             return "none"
@@ -229,9 +229,10 @@ def check_table(ch, le, variable_type):
 def check_assign_table(ch):
     count = 0
     for m in symbolTable:
-        if ch in m[1:2]:
-            if [scope_number] >= m[3:4]:
-                count = 1
+        if m[0:1] == ['ID']:
+            if ch in m[1:2]:
+                if [scope_number] >= m[3:4]:
+                    count = 1
     if count == 0:
         print(ch, " not defined before  line number ", line_number)
         exit(1)

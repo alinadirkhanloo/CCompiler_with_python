@@ -1,9 +1,11 @@
+int x=0;
 int n=0;
-int m (int i){
-if(n>0){
-n=8*9+5;
-}
-if(n>0){
-n=8*9+5;
-}
-}
+string str="M";
+int m (){
+    if(x>5){
+    n=9/8+4;
+    }
+    if(n=5){
+        x=str;
+    }
+ }
