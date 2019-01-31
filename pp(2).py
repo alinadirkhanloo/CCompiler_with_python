@@ -108,6 +108,7 @@ t_CLOSEBR = r'\]'
 t_ignore = ' \t'
 
 scope_number = 0
+scope_counter = 0
 counterU = 1
 label_number = 0
 line_number = 1
@@ -132,6 +133,11 @@ def addU_one():
 def removeU_one():
     global counterU
     counterU -= 1
+
+
+def increment_scope_counter():
+    global scope_counter
+    scope_counter += 1
 
 
 def increment_label_number():
@@ -502,7 +508,7 @@ def p_elif_stmt(p):
     'if_stmt : if LPAREN simple_expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 1])
     t = len(PB) - index2
-    PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
+    PB.insert(len(PB) - t, ["jp", len(PB) + 1, ])
     increment_label_number()
     print("p_elif_stmt")
 

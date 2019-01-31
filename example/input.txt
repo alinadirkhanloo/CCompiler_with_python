@@ -5,9 +5,9 @@ int m (){
     if(x>5){
     n=9/8+4;
     int y=0;
+    int y=8;
     }
     if(n==5){
         int y=4;
-        x=str;
     }
  }
