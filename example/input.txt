@@ -4,8 +4,10 @@ string str="M";
 int m (){
     if(x>5){
     n=9/8+4;
+    int y=0;
     }
     if(n==5){
+        int y=4;
         x=str;
     }
  }

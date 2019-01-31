@@ -50,36 +50,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-    'LESS',
-    'LARGE',
-    'ASSIGN',
-    'PLUS_ASSIGN',
-    'MINUS_ASSIGN',
-    'TIMES_ASSIGN',
-    'DIVIDE_ASSIGN',
-    'NUMBER',
-    'FLOAT_NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'OBRACELET',
-    'CBRACELET',
-    'ID',
-    'EQUALS',
-    'SEMICOLON',
-    'LESSTHAN',
-    'LARGETHAN',
-    'NOTEQUAL',
-    'COMMA',
-    'OPENBR',
-    'CLOSEBR',
-    'AND',
-    'PLUSPLUS',
-    'MINUSMINUS'
-) + tuple(reserved.values())
+             'LESS',
+             'LARGE',
+             'ASSIGN',
+             'PLUS_ASSIGN',
+             'MINUS_ASSIGN',
+             'TIMES_ASSIGN',
+             'DIVIDE_ASSIGN',
+             'NUMBER',
+             'FLOAT_NUMBER',
+             'PLUS',
+             'MINUS',
+             'TIMES',
+             'DIVIDE',
+             'LPAREN',
+             'RPAREN',
+             'OBRACELET',
+             'CBRACELET',
+             'ID',
+             'EQUALS',
+             'SEMICOLON',
+             'LESSTHAN',
+             'LARGETHAN',
+             'NOTEQUAL',
+             'COMMA',
+             'OPENBR',
+             'CLOSEBR',
+             'AND',
+             'PLUSPLUS',
+             'MINUSMINUS'
+         ) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -181,7 +181,7 @@ def t_ID(t):
         typestack.push(t.type)
         return t
 
-    result = check_table(t.value, scope_number, typestack.getPeek())
+    result = check_table(t.value, scope_number, typestack.getPeek(), id(t.value))
 
     if t.type == 'ID' and not typestack.isEmpty():
         if result == 0:
@@ -210,14 +210,13 @@ precedence = (
 )
 
 
-def check_table(ch, le, variable_type):
-    n = 0
+def check_table(ch, le, variable_type, id):
     result = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
                 if [le] >= m[3:4]:
-                    if variable_type == "none":
+                    if variable_type == "none" or [id] == m[2:3]:
                         return 1
                     else:
                         print(
@@ -501,7 +500,7 @@ def p_if_stmt(p):
 
 def p_elif_stmt(p):
     'if_stmt : if LPAREN simple_expression RPAREN statement else statement'
-    PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
+    PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 1])
     t = len(PB) - index2
     PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
     increment_label_number()
@@ -525,7 +524,7 @@ def p_else(p):
 
 def p_while_stmt(p):
     '''while_stmt : while LPAREN expression RPAREN statement'''
-    PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 2])
+    PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 1])
     loop.pop()
     print("p_while_stmt", id(p[1]))
 
@@ -808,7 +807,7 @@ if __name__ == "__main__":
     print("********************************************************\n")
     k = 0
     for m in symbolTable:
+        print(k, m, "\n")
         k += 1
-        print(m, "\n")
     print((k + 1), "halt")
     print("****************************************\n")
