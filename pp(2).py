@@ -19,7 +19,7 @@ class Stack:
         return self.items.__len__()
 
     def getPeek(self):
-        if self.items.__len__() > 0:
+        if self.items.__len__()>0:
             return self.items.__getitem__(self.items.__len__() - 1)
         else:
             return "none"
@@ -50,36 +50,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-    'LESS',
-    'LARGE',
-    'ASSIGN',
-    'PLUS_ASSIGN',
-    'MINUS_ASSIGN',
-    'TIMES_ASSIGN',
-    'DIVIDE_ASSIGN',
-    'NUMBER',
-    'FLOAT_NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'OBRACELET',
-    'CBRACELET',
-    'ID',
-    'EQUALS',
-    'SEMICOLON',
-    'LESSTHAN',
-    'LARGETHAN',
-    'NOTEQUAL',
-    'COMMA',
-    'OPENBR',
-    'CLOSEBR',
-    'AND',
-    'PLUSPLUS',
-    'MINUSMINUS'
-) + tuple(reserved.values())
+             'LESS',
+             'LARGE',
+             'ASSIGN',
+             'PLUS_ASSIGN',
+             'MINUS_ASSIGN',
+             'TIMES_ASSIGN',
+             'DIVIDE_ASSIGN',
+             'NUMBER',
+             'FLOAT_NUMBER',
+             'PLUS',
+             'MINUS',
+             'TIMES',
+             'DIVIDE',
+             'LPAREN',
+             'RPAREN',
+             'OBRACELET',
+             'CBRACELET',
+             'ID',
+             'EQUALS',
+             'SEMICOLON',
+             'LESSTHAN',
+             'LARGETHAN',
+             'NOTEQUAL',
+             'COMMA',
+             'OPENBR',
+             'CLOSEBR',
+             'AND',
+             'PLUSPLUS',
+             'MINUSMINUS'
+         ) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -164,7 +164,7 @@ def t_CBRACELET(t):
 
 
 def t_error(t):
-    print("message: Illegal character '%s'" % t.value[0])
+    print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
@@ -185,8 +185,7 @@ def t_ID(t):
 
     if t.type == 'ID' and not typestack.isEmpty():
         if result == 0:
-            symbolTable.append([t.type, t.value, id(
-                t.value), scope_number, typestack.pop()])
+            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop()])
     return t
 
 
@@ -220,8 +219,7 @@ def check_table(ch, le, variable_type):
                     if variable_type == "none":
                         return 1
                     else:
-                        print(
-                            "message: ", ch, " this used before in this scope line number ", line_number)
+                        print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ", line_number)
                         exit(1)
 
     return result
@@ -234,7 +232,7 @@ def check_assign_table(ch):
             if [scope_number] >= m[3:4]:
                 count = 1
     if count == 0:
-        print("message: ", ch, " not defined before  line number ", line_number)
+        print(ch, " not defined before  line number ", line_number)
         exit(1)
 
 
@@ -255,19 +253,17 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print("message:  type error ",
-                      ch2, "cant be ", ch1, "line number ", line_number)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print("message:  type error ",
-                      ch2, "cant be ", ch1, "line number ", line_number)
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
-                print("message:  type error ",
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
                       ch2, "cant be string", "line number ", line_number)
                 exit(1)
 
@@ -318,7 +314,7 @@ def p_declaration_fun(p):
 def p_var_declaration(p):
     '''var_declaration : type_specifier var_decl_list SEMICOLON'''
     if p[1] == 'void':
-        print("message:  void cant use for this")
+        print(" void cant use for thisssssssssssssssssssss")
         exit(1)
     typecheck(p[1], p[2])
     p[0] = p[2]
@@ -327,7 +323,7 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print("message:  type error cant be string")
+    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string")
 
 
 def p_var_decl_list_loop(p):
@@ -579,7 +575,7 @@ def p_for(p):
 def p_break_stmt(p):
     'break_stmt : BREAK SEMICOLON'
     if loop.isEmpty():
-        print("message: semantic error in break!")
+        print("semantic error in break !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         exit(1)
     p[0] = p[1]
 
@@ -796,14 +792,13 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open(
-        "F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
+    file = open("example/input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
     k = 0
-    for m in symbolTable:
+    for m in PB:
         k += 1
-        print(m, "\n")
+        print((k),m, "\n")
     print((k + 1), "halt")
     print("****************************************\n")
