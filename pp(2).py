@@ -328,7 +328,7 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print("message:  type error cant be string")
+    print("message:  type error ")
 
 
 def p_var_decl_list_loop(p):
@@ -493,19 +493,19 @@ def p_do(p):
 
 
 def p_if_stmt(p):
-    'if_stmt : if LPAREN expression RPAREN statement'
-    PB.insert(index1 + 1, ["JPF", p[3][3], len(PB) + 2])
+    'if_stmt : if LPAREN simple_expression RPAREN statement'
+    PB.insert(index1 + 1, ["JPF", p[3][3], len(PB) + 1])
     increment_label_number()
-    # print("p_if_stmt")
+    print("p_if_stmt")
 
 
 def p_elif_stmt(p):
-    'if_stmt : if LPAREN expression RPAREN statement else statement'
+    'if_stmt : if LPAREN simple_expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
     t = len(PB) - index2
     PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
     increment_label_number()
-    # print("p_elif_stmt")
+    print("p_elif_stmt")
 
 
 def p_if(p):
@@ -595,7 +595,7 @@ def p_expression(p):
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
-    if p[2] == '=':
+    if p[2] == '=' or p[2] == '==':
         p[0] = generate_code('=', p[1], p[3], )
     elif p[2] == '++':
         p[0] = ('+', p[1], 1)
@@ -666,8 +666,13 @@ def p_unary_rel_expression(p):
 
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
-    PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
-    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    if p[2] == '==':
+        PB.append(['=', p[1], p[3], 'temp' + str(counterU)])
+        p[0] = ['=', p[1], p[3], 'temp' + str(counterU)]
+    else:
+        PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
+        p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+
     if_index1 = len(PB)
     addU_one()
     # generate_code(p[2], p[1], p[3])
@@ -797,8 +802,7 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open(
-        "F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
+    file = open("example/input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
