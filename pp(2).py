@@ -41,7 +41,7 @@ scope_number
 label_number = 0
 line_number = 1
 if_else = False
-scope_counter=0
+unique_scope_counter = 0
 
 reserved = {
     'if': 'IF',
@@ -136,6 +136,11 @@ def removeU_one():
     counterU -= 1
 
 
+def increment_unique_scope_counter():
+    global unique_scope_counter
+    unique_scope_counter += 1
+
+
 def increment_label_number():
     global label_number
     label_number += 1
@@ -223,7 +228,7 @@ def check_table(ch, le, variable_type):
                     if variable_type == "none":
                         return 1
                     else:
-                        print("error: ",ch, " this used before in this scope line number ", line_number)
+                        print("error: ", ch, " this used before in this scope line number ", line_number)
                         exit(1)
 
     return result
@@ -798,8 +803,8 @@ if __name__ == "__main__":
     for m in PB:
         k += 1
         if m[0] == '=':
-            print("message: ",k,"->", str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
+            print("message: ", k, "->", str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
         elif m[0] == 'JPF':
-            print("message: ",k,"->", str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
+            print("message: ", k, "->", str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
         else:
-            print("message: ",k,"->", str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
+            print("message: ", k, "->", str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
