@@ -33,11 +33,10 @@ index1 = 0
 index2 = 0
 doindex1 = 0
 windex = 0
-forindex1 = 0
-forindex2 = 0
+before_step = 0
+after_step = 0
 scope_number = 0
 counterU = 1
-scope_number
 label_number = 0
 line_number = 1
 if_else = False
@@ -560,13 +559,13 @@ def p_while(p):
 
 def p_for_stmt(p):
     '''for_stmt : for LPAREN var_declaration rel_expression semicolon expression epsilon RPAREN statement'''
-    m = forindex1
-    while (forindex2 - m > 0):
-        PB.append(PB.pop(forindex1))
+    m = before_step
+    while (after_step - m > 0):
+        PB.append(PB.pop(before_step))
         m += 1
 
-    PB.insert(forindex1, ['JPF', p[4][3], len(PB) + 3])
-    PB.append(['JP', forindex2 - 2, ])
+    PB.insert(before_step, ['JPF', p[4][3], len(PB) + 3])
+    PB.append(['JP', after_step - 2, ])
 
     p[0] = p[8]
     loop.pop()
@@ -575,20 +574,18 @@ def p_for_stmt(p):
 
 def p_semicolon(p):
     'semicolon : SEMICOLON'
-    global forindex1
-    forindex1 = len(PB)
+    global before_step
+    before_step = len(PB)
 
 
 def p_epsilon(p):
     'epsilon :'
-    global forindex2
-    forindex2 = len(PB)
+    global after_step
+    after_step = len(PB)
 
 
 def p_for(p):
     'for : FOR'
-    global forindex3
-    forindex3 = len(PB)
     loop.push(p[1])
     print("p_for")
 
