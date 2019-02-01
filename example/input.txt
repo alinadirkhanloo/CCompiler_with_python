@@ -4,16 +4,20 @@ string str="M";
 int m (){
     if(x>5){
     string s="dffkjfls";
-    int p="dsfsf";
+    string p="dsfsf";
     int y=0;
-    }
-    while(n==5){
-        int y=0;
-        x=str;
     }
     if(x==4)
     {
     x=0;
+    }
+
+ }
+
+ float main(){
+    for(int i=0;i<10;i=i+1)
+    {
+        int a=0;
     }
 
  }

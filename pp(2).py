@@ -26,15 +26,15 @@ class Stack:
 
 
 symbolTable = []
-semnticstack = Stack()
 typestack = Stack()
-scope_stack = Stack()
 PB = []
 loop = Stack()
 index1 = 0
 index2 = 0
 doindex1 = 0
 windex = 0
+forindex1 = 0
+forindex2 = 0
 scope_number = 0
 counterU = 1
 scope_number
@@ -262,13 +262,13 @@ def typecheck(ch1, ch2):
             break
 
     if type1 == ['INT'] and type2 != ['NUMBER']:
-        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2 ,"to ",ch1)
         exit(1)
     elif type1 == ['FLOAT'] and type2 != ['FLOAT_NUMBER']:
-        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2 ,"to ",ch1)
         exit(1)
         type1 == ['STRING'] and type2 != ['STRING']
-        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2 ,"to ",ch1)
         exit(1)
 
 
@@ -287,7 +287,7 @@ def typecheck_for_2id(ch1, ch2):
                 if [scope_number] >= m[3:4]:
                     type2 = m[4:5]
                     break
-    if type1 != type2:
+    if type1 != type2 and type2!='':
         print("error: type error line number ", line_number)
         exit(1)
 
@@ -368,9 +368,6 @@ def p_var_decl_id(p):
 
 def p_var_decl_array(p):
     'var_decl_id : ID OPENBR NUMBER CLOSEBR'
-    # check_table(p[1], scope_number)
-    semnticstack.push(id(p[1]))
-    # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_array")
 
 
@@ -379,7 +376,6 @@ def p_var_decl_ids(p):
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
     typecheck(p[1], p[3])
-    semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[1]
     print("p_var_decl_ids")
@@ -390,7 +386,6 @@ def p_var_decl_assign_ids(p):
     check_assign_table(p[1])
     check_assign_table(p[3])
     typecheck_for_2id(p[1], p[3])
-    semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[3]
     print("p_var_decl_assign_ids")
@@ -408,7 +403,6 @@ def p_type_specifier(p):
 def p_fun_declaration(p):
     '''fun_declaration : type_specifier ID LPAREN params RPAREN statement'''
     check_assign_table(p[2])
-    semnticstack.push(id(p[2]))
     p[0] = p[6]
     print("p_fun_declaration " + p[1])
 
@@ -525,8 +519,8 @@ def p_if_stmt(p):
 def p_elif_stmt(p):
     'if_stmt : if LPAREN rel_expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
-    t = len(PB) - index2
-    PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
+    t = len(PB) - index2  #else statement size
+    PB.insert(len(PB) - t, ["JP", len(PB) + 2, ])
     increment_label_number()
     # print("p_elif_stmt")
 
@@ -561,8 +555,7 @@ def p_while(p):
     print("p_while", id(p[0]))
 
 
-forindex1 = 0
-forindex2 = 0
+
 
 
 def p_for_stmt(p):
@@ -572,8 +565,8 @@ def p_for_stmt(p):
         PB.append(PB.pop(forindex1))
         m += 1
 
-    PB.insert(forindex1, ['jpf', p[4][3], len(PB) + 3])
-    PB.append(['jp', forindex2 - 1, ])
+    PB.insert(forindex1, ['JPF', p[4][3], len(PB) + 3])
+    PB.append(['JP', forindex2 - 2, ])
 
     p[0] = p[8]
     loop.pop()
@@ -618,8 +611,9 @@ def p_expression(p):
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
-    typecheck(p[1], p[3])
-    typecheck_for_2id(p[1], p[3])
+    if p[3]=="NUMBER" or p[3]=="STRING" or p[3]=="ID":
+        typecheck(p[1], p[3])
+        typecheck_for_2id(p[1], p[3])
     if p[2] == '=':
         p[0] = generate_code('=', p[1], p[3], )
     print("p_expression", p[1], p[2], p[3])
@@ -823,12 +817,12 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open("example/input.txt", "r")
+    file = open("example/input2.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
     k = 0
-    for m in symbolTable:
+    for m in PB:
         k += 1
         print(m, "\n")
     print("**********************************************************\n")
@@ -839,5 +833,9 @@ if __name__ == "__main__":
             print("message: ", k, "->", str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
         elif m[0] == 'JPF':
             print("message: ", k, "->", str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
+        elif m[0] == 'JP':
+            print("message: ", k, "->", str(m[0]) + " " + str(m[1]))
         else:
             print("message: ", k, "->", str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
+
+    print("message: ", k+1, "-> halt")
