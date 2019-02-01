@@ -161,6 +161,7 @@ def t_newline(t):
 def t_OBRACELET(t):
     r'\{'
     add_one()
+    increment_unique_scope_counter()
     return t
 
 
@@ -193,7 +194,7 @@ def t_ID(t):
 
     if t.type == 'ID' and not typestack.isEmpty():
         if result == 0:
-            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop()])
+            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop(), unique_scope_counter])
     return t
 
 
@@ -225,7 +226,7 @@ def check_table(ch, le, variable_type):
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
                 if [le] >= m[3:4]:
-                    if variable_type == "none":
+                    if variable_type == "none" or m[5:6]<[unique_scope_counter]:
                         return 1
                     else:
                         print("error: ", ch, " this used before in this scope line number ", line_number)
@@ -245,6 +246,36 @@ def check_assign_table(ch):
         print(ch, " not defined before  line number ", line_number)
         exit(1)
 
+def typecheck(ch1, ch2):
+    type1 = ''
+    type2 = ''
+    for m in symbolTable:
+        if m[0:1] == ['ID']:
+            if ch2 in m[1:2]:
+                if [scope_number] <= m[3:4]:
+                    type2 = m[4:5]
+                    break
+    for m in symbolTable:
+        if m[2:3] == [id(ch2)]:
+            type1 = m[0:1]
+            break
+
+    if ch1 == 'int':
+        if type1 != ['NUMBER']:
+            if type1 == ['ID'] and type2 != ['NUMBER']:
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                exit(1)
+    if ch1 == 'float':
+        if type1 != ['FLOAT_NUMBER']:
+            if type1 == ['ID'] and type2 != ['FLOAT']:
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
+                exit(1)
+    if ch1 == 'string':
+        if type1 != ['STRING']:
+            if type1 == ['ID'] and type2 != ['STRING']:
+                print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
+                      ch2, "cant be string")
+                exit(1)
 
 def typecheck_for_2id(ch1, ch2):
     type1 = ''
