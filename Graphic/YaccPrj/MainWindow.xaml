@@ -27,10 +27,12 @@
                 </Custom:RibbonGroup>
             </Custom:RibbonTab>
         </Custom:Ribbon>
+
         <TextBox x:Name="textBox" Margin="10,142,0,240.667" TextWrapping="Wrap" Text="" FontFamily="Britannic Bold" HorizontalAlignment="Left" Width="383"/>
         <TextBox Visibility="Hidden" x:Name="textBox1" IsReadOnly="True" Margin="10,0,10,9.667" TextWrapping="Wrap" Text="" Height="226" VerticalAlignment="Bottom" FontFamily="Yu Gothic Medium"/>
         <ListBox x:Name="error" Height="226" Margin="10,0,0,9.667" VerticalAlignment="Bottom" Foreground="#FFD40000" HorizontalAlignment="Left" Width="383"/>
         <ListBox x:Name="symbol" Height="226" Margin="0,0,10,9.667" VerticalAlignment="Bottom" Foreground="DarkGoldenrod" HorizontalAlignment="Right" Width="386"/>
         <ListBox x:Name="result" Margin="0,142,10,240.667" Foreground="DarkGreen" HorizontalAlignment="Right" Width="386"/>
+
     </Grid>
 </Window>

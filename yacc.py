@@ -2118,7 +2118,7 @@ class LRGeneratedTable(LRTable):
         self.lr_goto_cache = {}        # Cache of computed gotos
         self.lr0_cidhash   = {}        # Cache of closures
 
-        self._add_count    = 0         # Internal counter used to detect cycles
+        self._add_count    = 0         # Internal scope_number used to detect cycles
 
         # Diagonistic information filled in by the table generator
         self.sr_conflict   = 0

@@ -1,6 +1,9 @@
 int n=0;
-int m (){
-    do{
-        n=5+9*8;
-    }while(n<8)
+int m (int i){
+if(n>0){
+n=8*9+5;
+}
+if(n>0){
+n=8*9+5;
+}
 }

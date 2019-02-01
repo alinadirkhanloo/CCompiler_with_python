@@ -78,6 +78,7 @@ namespace YaccPrj
         private void Button_About_Click(object sender, RoutedEventArgs e)
         {
             MaterialMessageBox.Show("Sir J0l@n \nSir K@r@m \nG0d 0f Bug", "About");
+
         }
     }
 }
