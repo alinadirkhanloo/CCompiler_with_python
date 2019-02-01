@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using BespokeFusion;
 
 namespace YaccPrj
@@ -46,23 +45,27 @@ namespace YaccPrj
 
             Console.WriteLine(output);
 
-            var result = output.Split('\n').ToList();
+            var results = output.Split('\n').ToList();
 
             var myResult = new List<string>();
+            var myErrorResult = new List<string>();
+            var mySymbolNybbleResult = new List<string>();
 
-            foreach (var o in result)
+            foreach (var o in results)
             {
+                if (o.Contains("error: "))
+                    myErrorResult.Add(o.Replace("error: ", ""));
+
                 if (o.Contains("message: "))
-                    myResult.Add(o.Replace("message: ", ""));
+                    myResult.Add(o.Replace("message: ",""));
 
-                else if (o.Contains("["))
-                {
-                    myResult.Add(o.Replace("message: ", "").Replace("[","").Replace("]",""));
-                    listBox.Foreground = Brushes.DarkGreen;
-                }
-            }
+                if (o.Contains("["))
+                    mySymbolNybbleResult.Add(o);
+            }          
 
-            listBox.ItemsSource = myResult;
+            result.ItemsSource = myResult;
+            error.ItemsSource = myErrorResult;
+            symbol.ItemsSource = mySymbolNybbleResult;
 
             Console.ReadLine();
         }
@@ -74,7 +77,8 @@ namespace YaccPrj
 
         private void Button_About_Click(object sender, RoutedEventArgs e)
         {
-            MaterialMessageBox.Show("Sir J0l@n \nSir S0lt@n \nG0d 0f Bug", "About");
+            MaterialMessageBox.Show("Sir J0l@n \nSir K@r@m \nG0d 0f Bug", "About");
+
         }
     }
 }
