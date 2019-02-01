@@ -36,10 +36,9 @@ windex = 0
 before_step = 0
 after_step = 0
 scope_number = 0
-counterU = 1
+temp_counter = 1
 label_number = 0
 line_number = 1
-if_else = False
 unique_scope_counter = 0
 
 reserved = {
@@ -126,13 +125,13 @@ def remove_one():
 
 
 def addU_one():
-    global counterU
-    counterU += 1
+    global temp_counter
+    temp_counter += 1
 
 
 def removeU_one():
-    global counterU
-    counterU -= 1
+    global temp_counter
+    temp_counter -= 1
 
 
 def increment_unique_scope_counter():
@@ -295,14 +294,14 @@ def generate_code(action, p1, p3):
     if action == '=':
         PB.append(['=', p3, p1])
     elif action == '*':
-        PB.append(['*', p1, p3, 'temp' + str(counterU)])
+        PB.append(['*', p1, p3, 'temp' + str(temp_counter)])
     elif action == '/':
-        PB.append(['/', p1, p3, 'temp' + str(counterU)])
+        PB.append(['/', p1, p3, 'temp' + str(temp_counter)])
     elif action == '+':
-        PB.append(['+', p1, p3, 'temp' + str(counterU)])
+        PB.append(['+', p1, p3, 'temp' + str(temp_counter)])
     elif action == '-':
-        PB.append(['-', p1, p3, 'temp' + str(counterU)])
-    return 'temp' + str(counterU)
+        PB.append(['-', p1, p3, 'temp' + str(temp_counter)])
+    return 'temp' + str(temp_counter)
 
 
 def p_program(p):
@@ -676,8 +675,8 @@ def p_unary_rel_expression(p):
 
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
-    PB.append([p[2], p[1], p[3], 'temp' + str(counterU)])
-    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    PB.append([p[2], p[1], p[3], 'temp' + str(temp_counter)])
+    p[0] = [p[2], p[1], p[3], 'temp' + str(temp_counter)]
     if_index1 = len(PB)
     addU_one()
     # generate_code(p[2], p[1], p[3])
@@ -814,7 +813,7 @@ def p_error(p):
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open("example/input2.txt", "r")
+    file = open("example/input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")

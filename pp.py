@@ -109,7 +109,7 @@ t_CLOSEBR = r'\]'
 t_ignore = ' \t'
 
 scope_number = 0
-counterU = 1
+temp_counter = 1
 label_number = 0
 if_else=False
 
@@ -125,12 +125,12 @@ def remove_one():
 
 
 def addU_one():
-    global counterU
+    global temp_counter
     counterU += 1
 
 
 def removeU_one():
-    global counterU
+    global temp_counter
     counterU -= 1
 
 
@@ -267,27 +267,27 @@ def generate_code(action, p1, p3):
     if action == '=':
         PB.push(['=', p3, p1])
     elif action == '*':
-        PB.push(['*', p1, p3, 'temp' + str(counterU)])
+        PB.push(['*', p1, p3, 'temp' + str(temp_counter)])
     elif action == '/':
-        PB.push(['/', p1, p3, 'temp' + str(counterU)])
+        PB.push(['/', p1, p3, 'temp' + str(temp_counter)])
     elif action == '+':
-        PB.push(['+', p1, p3, 'temp' + str(counterU)])
+        PB.push(['+', p1, p3, 'temp' + str(temp_counter)])
     elif action == '-':
-        PB.push(['-', p1, p3, 'temp' + str(counterU)])
-    return 'temp' + str(counterU)
+        PB.push(['-', p1, p3, 'temp' + str(temp_counter)])
+    return 'temp' + str(temp_counter)
 
 def if_else_generate_code(action, p1, p3,index):
     if action == '=':
         PB.push_to(['=', p1, p3],index)
     elif action == '*':
-        PB.push_to(['*', p1, p3, 'temp' + str(counterU)],index)
+        PB.push_to(['*', p1, p3, 'temp' + str(temp_counter)], index)
     elif action == '/':
-        PB.push_to(['/', p1, p3, 'temp' + str(counterU)],index)
+        PB.push_to(['/', p1, p3, 'temp' + str(temp_counter)], index)
     elif action == '+':
-        PB.push_to(['+', p1, p3, 'temp' + str(counterU)],index)
+        PB.push_to(['+', p1, p3, 'temp' + str(temp_counter)], index)
     elif action == '-':
-        PB.push_to(['-', p1, p3, 'temp' + str(counterU)],index)
-    return 'temp' + str(counterU)
+        PB.push_to(['-', p1, p3, 'temp' + str(temp_counter)], index)
+    return 'temp' + str(temp_counter)
 
 
 
@@ -648,7 +648,7 @@ def p_unary_rel_expression(p):
 
 def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
-    p[0] = [p[2], p[1], p[3], 'temp' + str(counterU)]
+    p[0] = [p[2], p[1], p[3], 'temp' + str(temp_counter)]
     addU_one()
     # generate_code(p[2], p[1], p[3])
     print("p_rel_expression")
