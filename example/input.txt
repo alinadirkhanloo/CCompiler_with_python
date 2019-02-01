@@ -1,13 +1,14 @@
-int x=0;
+int x=5;
 int n=0;
 string str="M";
 int m (){
     if(x>5){
+    string s="dffkjfls";
+    int p="dsfsf";
     int y=0;
     }
     while(n==5){
         int y=0;
-        n="dsfsf"
         x=str;
     }
     if(x==4)

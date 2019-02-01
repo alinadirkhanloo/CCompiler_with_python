@@ -252,31 +252,24 @@ def typecheck(ch1, ch2):
     type2 = ''
     for m in symbolTable:
         if m[0:1] == ['ID']:
-            if ch2 in m[1:2]:
-                if [scope_number] <= m[3:4]:
-                    type2 = m[4:5]
+            if ch1 in m[1:2]:
+                if [scope_number] >= m[3:4]:
+                    type1 = m[4:5]
                     break
     for m in symbolTable:
         if m[2:3] == [id(ch2)]:
-            type1 = m[0:1]
+            type2 = m[0:1]
             break
 
-    if ch1 == 'int':
-        if type1 != ['NUMBER']:
-            if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
-                exit(1)
-    if ch1 == 'float':
-        if type1 != ['FLOAT_NUMBER']:
-            if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ", ch2, "cant be ", ch1)
-                exit(1)
-    if ch1 == 'string':
-        if type1 != ['STRING']:
-            if type1 == ['ID'] and type2 != ['STRING']:
-                print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
-                      ch2, "cant be string")
-                exit(1)
+    if type1 == ['INT'] and type2 != ['NUMBER']:
+        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        exit(1)
+    elif type1 == ['FLOAT'] and type2 != ['FLOAT_NUMBER']:
+        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        exit(1)
+        type1 == ['STRING'] and type2 != ['STRING']
+        print(" type error : cannot assign ", ch2 ,"to ",ch1)
+        exit(1)
 
 
 def typecheck_for_2id(ch1, ch2):
@@ -625,6 +618,7 @@ def p_expression(p):
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
+    typecheck(p[1], p[3])
     typecheck_for_2id(p[1], p[3])
     if p[2] == '=':
         p[0] = generate_code('=', p[1], p[3], )
@@ -792,10 +786,12 @@ def p_constant_number(p):
     p[0] = p[1]
     print("p_constant_number")
 
+
 def p_constant_string(p):
     'constant : STRING '
     p[0] = p[1]
     print("p_constant_string")
+
 
 def p_constant_float_number(p):
     'constant : FLOAT_NUMBER '

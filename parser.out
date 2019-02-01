@@ -99,12 +99,13 @@ Rule 93    factor -> constant
 Rule 94    constant -> TRUE
 Rule 95    constant -> FALSE
 Rule 96    constant -> NUMBER
-Rule 97    constant -> FLOAT_NUMBER
-Rule 98    call -> ID LPAREN args RPAREN
-Rule 99    args -> args_list
-Rule 100   args -> <empty>
-Rule 101   args_list -> args_list COMMA expression
-Rule 102   args_list -> expression
+Rule 97    constant -> STRING
+Rule 98    constant -> FLOAT_NUMBER
+Rule 99    call -> ID LPAREN args RPAREN
+Rule 100   args -> args_list
+Rule 101   args -> <empty>
+Rule 102   args_list -> args_list COMMA expression
+Rule 103   args_list -> expression
 
 Terminals, with rules where they appear
 
@@ -113,7 +114,7 @@ ASSIGN               : 12 13 14 15 56
 BREAK                : 55
 CBRACELET            : 29
 CLOSEBR              : 11 67
-COMMA                : 8 23 26 101
+COMMA                : 8 23 26 102
 DIVIDE               : 87
 DIVIDE_ASSIGN        : 65
 DO                   : 44
@@ -121,16 +122,16 @@ ELSE                 : 48
 EQUALS               : 74
 FALSE                : 95
 FLOAT                : 17
-FLOAT_NUMBER         : 13 97
+FLOAT_NUMBER         : 13 98
 FOR                  : 54
-ID                   : 10 11 12 13 14 15 15 20 28 59 60 66 67 98
+ID                   : 10 11 12 13 14 15 15 20 28 59 60 66 67 99
 IF                   : 47
 INT                  : 16
 LARGE                : 76
 LARGETHAN            : 77
 LESS                 : 75
 LESSTHAN             : 78
-LPAREN               : 20 43 45 46 49 51 90 98
+LPAREN               : 20 43 45 46 49 51 90 99
 MINUS                : 83
 MINUSMINUS           : 60
 MINUS_ASSIGN         : 63
@@ -141,9 +142,9 @@ OPENBR               : 11 67
 PLUS                 : 82
 PLUSPLUS             : 59
 PLUS_ASSIGN          : 62
-RPAREN               : 20 43 45 46 49 51 90 98
+RPAREN               : 20 43 45 46 49 51 90 99
 SEMICOLON            : 6 7 41 42 52 55
-STRING               : 14 19
+STRING               : 14 19 97
 TIMES                : 86
 TIMES_ASSIGN         : 64
 TRUE                 : 94
@@ -156,8 +157,8 @@ Nonterminals, with rules where they appear
 add_expression       : 72 72 73 80
 addop                : 80 88
 addopration_expression : 57
-args                 : 98
-args_list            : 99 101
+args                 : 99
+args_list            : 100 102
 break_stmt           : 40
 call                 : 92
 compound_stmt        : 35
@@ -168,7 +169,7 @@ do                   : 43
 do_while_stmt        : 39
 else                 : 46
 epsilon              : 51
-expression           : 41 43 51 56 57 58 90 101 102
+expression           : 41 43 51 56 57 58 90 102 103
 expression_stmt      : 34
 factor               : 89
 for                  : 51
@@ -689,11 +690,12 @@ state 36
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -710,7 +712,8 @@ state 36
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     statement                      shift and go to state 42
     expression_stmt                shift and go to state 43
@@ -751,7 +754,7 @@ state 37
     VOID            shift and go to state 9
     STRING          shift and go to state 10
 
-    param_type_list                shift and go to state 80
+    param_type_list                shift and go to state 81
     type_specifier                 shift and go to state 24
 
 state 38
@@ -769,7 +772,7 @@ state 39
 
     ID              shift and go to state 35
 
-    param_id                       shift and go to state 81
+    param_id                       shift and go to state 82
 
 state 40
 
@@ -777,10 +780,10 @@ state 40
     (60) expression -> ID . MINUSMINUS
     (66) var -> ID .
     (67) var -> ID . OPENBR NUMBER CLOSEBR
-    (98) call -> ID . LPAREN args RPAREN
+    (99) call -> ID . LPAREN args RPAREN
 
-    PLUSPLUS        shift and go to state 82
-    MINUSMINUS      shift and go to state 83
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
     ASSIGN          reduce using rule 66 (var -> ID .)
     PLUS_ASSIGN     reduce using rule 66 (var -> ID .)
     MINUS_ASSIGN    reduce using rule 66 (var -> ID .)
@@ -800,8 +803,8 @@ state 40
     SEMICOLON       reduce using rule 66 (var -> ID .)
     RPAREN          reduce using rule 66 (var -> ID .)
     COMMA           reduce using rule 66 (var -> ID .)
-    OPENBR          shift and go to state 84
-    LPAREN          shift and go to state 85
+    OPENBR          shift and go to state 85
+    LPAREN          shift and go to state 86
 
 
 state 41
@@ -833,11 +836,12 @@ state 41
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -847,9 +851,10 @@ state 41
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    expression                     shift and go to state 86
+    expression                     shift and go to state 87
     var                            shift and go to state 59
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
@@ -1080,7 +1085,7 @@ state 50
 
     (41) expression_stmt -> expression . SEMICOLON
 
-    SEMICOLON       shift and go to state 87
+    SEMICOLON       shift and go to state 88
 
 
 state 51
@@ -1140,14 +1145,14 @@ state 52
     FLOAT_NUMBER    reduce using rule 31 (local_declarations -> .)
     CBRACELET       reduce using rule 31 (local_declarations -> .)
 
-    local_declarations             shift and go to state 88
+    local_declarations             shift and go to state 89
 
 state 53
 
     (45) if_stmt -> if . LPAREN rel_expression RPAREN statement
     (46) if_stmt -> if . LPAREN rel_expression RPAREN statement else statement
 
-    LPAREN          shift and go to state 89
+    LPAREN          shift and go to state 90
 
 
 state 54
@@ -1164,14 +1169,14 @@ state 55
 
     (49) while_stmt -> while . LPAREN rel_expression RPAREN statement
 
-    LPAREN          shift and go to state 90
+    LPAREN          shift and go to state 91
 
 
 state 56
 
     (51) for_stmt -> for . LPAREN var_declaration rel_expression semicolon expression epsilon RPAREN statement
 
-    LPAREN          shift and go to state 91
+    LPAREN          shift and go to state 92
 
 
 state 57
@@ -1223,11 +1228,12 @@ state 57
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -1244,10 +1250,11 @@ state 57
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     do                             shift and go to state 57
-    statement                      shift and go to state 92
+    statement                      shift and go to state 93
     while                          shift and go to state 55
     expression                     shift and go to state 50
     expression_stmt                shift and go to state 43
@@ -1275,7 +1282,7 @@ state 58
 
     (55) break_stmt -> BREAK . SEMICOLON
 
-    SEMICOLON       shift and go to state 93
+    SEMICOLON       shift and go to state 94
 
 
 state 59
@@ -1289,7 +1296,7 @@ state 59
     (64) mulopration_expression -> . TIMES_ASSIGN
     (65) mulopration_expression -> . DIVIDE_ASSIGN
 
-    ASSIGN          shift and go to state 94
+    ASSIGN          shift and go to state 95
     TIMES           reduce using rule 91 (factor -> var .)
     DIVIDE          reduce using rule 91 (factor -> var .)
     EQUALS          reduce using rule 91 (factor -> var .)
@@ -1304,13 +1311,13 @@ state 59
     SEMICOLON       reduce using rule 91 (factor -> var .)
     RPAREN          reduce using rule 91 (factor -> var .)
     COMMA           reduce using rule 91 (factor -> var .)
-    PLUS_ASSIGN     shift and go to state 97
-    MINUS_ASSIGN    shift and go to state 98
-    TIMES_ASSIGN    shift and go to state 99
-    DIVIDE_ASSIGN   shift and go to state 100
+    PLUS_ASSIGN     shift and go to state 98
+    MINUS_ASSIGN    shift and go to state 99
+    TIMES_ASSIGN    shift and go to state 100
+    DIVIDE_ASSIGN   shift and go to state 101
 
-    addopration_expression         shift and go to state 95
-    mulopration_expression         shift and go to state 96
+    addopration_expression         shift and go to state 96
+    mulopration_expression         shift and go to state 97
 
 state 60
 
@@ -1320,7 +1327,7 @@ state 60
     SEMICOLON       reduce using rule 61 (expression -> simple_expression .)
     RPAREN          reduce using rule 61 (expression -> simple_expression .)
     COMMA           reduce using rule 61 (expression -> simple_expression .)
-    AND             shift and go to state 101
+    AND             shift and go to state 102
 
 
 state 61
@@ -1363,6 +1370,7 @@ state 64
     TRUE            reduce using rule 44 (do -> DO .)
     FALSE           reduce using rule 44 (do -> DO .)
     NUMBER          reduce using rule 44 (do -> DO .)
+    STRING          reduce using rule 44 (do -> DO .)
     FLOAT_NUMBER    reduce using rule 44 (do -> DO .)
 
 
@@ -1417,30 +1425,32 @@ state 67
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     NOTEQUAL        shift and go to state 67
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    unary_rel_expression           shift and go to state 102
+    unary_rel_expression           shift and go to state 103
     rel_expression                 shift and go to state 54
     add_expression                 shift and go to state 68
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
@@ -1462,17 +1472,17 @@ state 68
     SEMICOLON       reduce using rule 73 (rel_expression -> add_expression .)
     RPAREN          reduce using rule 73 (rel_expression -> add_expression .)
     COMMA           reduce using rule 73 (rel_expression -> add_expression .)
-    EQUALS          shift and go to state 107
-    LESS            shift and go to state 108
-    LARGE           shift and go to state 109
-    LARGETHAN       shift and go to state 110
-    LESSTHAN        shift and go to state 111
-    NOTEQUAL        shift and go to state 112
+    EQUALS          shift and go to state 108
+    LESS            shift and go to state 109
+    LARGE           shift and go to state 110
+    LARGETHAN       shift and go to state 111
+    LESSTHAN        shift and go to state 112
+    NOTEQUAL        shift and go to state 113
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
 
-    relop                          shift and go to state 105
-    addop                          shift and go to state 106
+    relop                          shift and go to state 106
+    addop                          shift and go to state 107
 
 state 69
 
@@ -1487,25 +1497,27 @@ state 69
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     addop                          shift and go to state 69
-    unary_expression               shift and go to state 113
+    unary_expression               shift and go to state 114
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
@@ -1528,10 +1540,10 @@ state 70
     SEMICOLON       reduce using rule 81 (add_expression -> term .)
     RPAREN          reduce using rule 81 (add_expression -> term .)
     COMMA           reduce using rule 81 (add_expression -> term .)
-    TIMES           shift and go to state 115
-    DIVIDE          shift and go to state 116
+    TIMES           shift and go to state 116
+    DIVIDE          shift and go to state 117
 
-    mulop                          shift and go to state 114
+    mulop                          shift and go to state 115
 
 state 71
 
@@ -1584,6 +1596,7 @@ state 73
     TRUE            reduce using rule 82 (addop -> PLUS .)
     FALSE           reduce using rule 82 (addop -> PLUS .)
     NUMBER          reduce using rule 82 (addop -> PLUS .)
+    STRING          reduce using rule 82 (addop -> PLUS .)
     FLOAT_NUMBER    reduce using rule 82 (addop -> PLUS .)
 
 
@@ -1598,6 +1611,7 @@ state 74
     TRUE            reduce using rule 83 (addop -> MINUS .)
     FALSE           reduce using rule 83 (addop -> MINUS .)
     NUMBER          reduce using rule 83 (addop -> MINUS .)
+    STRING          reduce using rule 83 (addop -> MINUS .)
     FLOAT_NUMBER    reduce using rule 83 (addop -> MINUS .)
 
 
@@ -1683,25 +1697,45 @@ state 78
 
 state 79
 
-    (97) constant -> FLOAT_NUMBER .
+    (97) constant -> STRING .
 
-    TIMES           reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    DIVIDE          reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    EQUALS          reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    LESS            reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    LARGE           reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    LARGETHAN       reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    LESSTHAN        reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    NOTEQUAL        reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    PLUS            reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    MINUS           reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    AND             reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    SEMICOLON       reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    RPAREN          reduce using rule 97 (constant -> FLOAT_NUMBER .)
-    COMMA           reduce using rule 97 (constant -> FLOAT_NUMBER .)
+    TIMES           reduce using rule 97 (constant -> STRING .)
+    DIVIDE          reduce using rule 97 (constant -> STRING .)
+    EQUALS          reduce using rule 97 (constant -> STRING .)
+    LESS            reduce using rule 97 (constant -> STRING .)
+    LARGE           reduce using rule 97 (constant -> STRING .)
+    LARGETHAN       reduce using rule 97 (constant -> STRING .)
+    LESSTHAN        reduce using rule 97 (constant -> STRING .)
+    NOTEQUAL        reduce using rule 97 (constant -> STRING .)
+    PLUS            reduce using rule 97 (constant -> STRING .)
+    MINUS           reduce using rule 97 (constant -> STRING .)
+    AND             reduce using rule 97 (constant -> STRING .)
+    SEMICOLON       reduce using rule 97 (constant -> STRING .)
+    RPAREN          reduce using rule 97 (constant -> STRING .)
+    COMMA           reduce using rule 97 (constant -> STRING .)
 
 
 state 80
+
+    (98) constant -> FLOAT_NUMBER .
+
+    TIMES           reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    DIVIDE          reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    EQUALS          reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    LESS            reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    LARGE           reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    LARGETHAN       reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    LESSTHAN        reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    NOTEQUAL        reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    PLUS            reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    MINUS           reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    AND             reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    SEMICOLON       reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    RPAREN          reduce using rule 98 (constant -> FLOAT_NUMBER .)
+    COMMA           reduce using rule 98 (constant -> FLOAT_NUMBER .)
+
+
+state 81
 
     (23) param_list -> param_list COMMA param_type_list .
 
@@ -1709,7 +1743,7 @@ state 80
     RPAREN          reduce using rule 23 (param_list -> param_list COMMA param_type_list .)
 
 
-state 81
+state 82
 
     (26) param_id_list -> param_id_list COMMA param_id .
 
@@ -1717,7 +1751,7 @@ state 81
     RPAREN          reduce using rule 26 (param_id_list -> param_id_list COMMA param_id .)
 
 
-state 82
+state 83
 
     (59) expression -> ID PLUSPLUS .
 
@@ -1726,7 +1760,7 @@ state 82
     COMMA           reduce using rule 59 (expression -> ID PLUSPLUS .)
 
 
-state 83
+state 84
 
     (60) expression -> ID MINUSMINUS .
 
@@ -1735,20 +1769,20 @@ state 83
     COMMA           reduce using rule 60 (expression -> ID MINUSMINUS .)
 
 
-state 84
+state 85
 
     (67) var -> ID OPENBR . NUMBER CLOSEBR
 
-    NUMBER          shift and go to state 117
+    NUMBER          shift and go to state 118
 
 
-state 85
+state 86
 
-    (98) call -> ID LPAREN . args RPAREN
-    (99) args -> . args_list
-    (100) args -> .
-    (101) args_list -> . args_list COMMA expression
-    (102) args_list -> . expression
+    (99) call -> ID LPAREN . args RPAREN
+    (100) args -> . args_list
+    (101) args -> .
+    (102) args_list -> . args_list COMMA expression
+    (103) args_list -> . expression
     (56) expression -> . var ASSIGN expression
     (57) expression -> . var addopration_expression expression
     (58) expression -> . var mulopration_expression expression
@@ -1775,13 +1809,14 @@ state 85
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
-    RPAREN          reduce using rule 100 (args -> .)
+    RPAREN          reduce using rule 101 (args -> .)
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
     PLUS            shift and go to state 73
@@ -1790,11 +1825,12 @@ state 85
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    args                           shift and go to state 118
-    args_list                      shift and go to state 119
-    expression                     shift and go to state 120
+    args                           shift and go to state 119
+    args_list                      shift and go to state 120
+    expression                     shift and go to state 121
     var                            shift and go to state 59
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
@@ -1807,14 +1843,14 @@ state 85
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 86
+state 87
 
     (90) factor -> LPAREN expression . RPAREN
 
-    RPAREN          shift and go to state 121
+    RPAREN          shift and go to state 122
 
 
-state 87
+state 88
 
     (41) expression_stmt -> expression SEMICOLON .
 
@@ -1843,7 +1879,7 @@ state 87
     ELSE            reduce using rule 41 (expression_stmt -> expression SEMICOLON .)
 
 
-state 88
+state 89
 
     (29) compound_stmt -> OBRACELET local_declarations . statement_list local_declarations CBRACELET
     (30) local_declarations -> local_declarations . var_declaration
@@ -1901,11 +1937,12 @@ state 88
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
   ! shift/reduce conflict for INT resolved as shift
   ! shift/reduce conflict for FLOAT resolved as shift
@@ -1915,7 +1952,7 @@ state 88
     INT             shift and go to state 7
     FLOAT           shift and go to state 8
     VOID            shift and go to state 9
-    STRING          shift and go to state 10
+    STRING          shift and go to state 127
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
     BREAK           shift and go to state 58
@@ -1931,17 +1968,17 @@ state 88
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
   ! INT             [ reduce using rule 33 (statement_list -> .) ]
   ! FLOAT           [ reduce using rule 33 (statement_list -> .) ]
   ! VOID            [ reduce using rule 33 (statement_list -> .) ]
   ! STRING          [ reduce using rule 33 (statement_list -> .) ]
 
-    statement_list                 shift and go to state 122
-    var_declaration                shift and go to state 123
-    statement                      shift and go to state 124
-    type_specifier                 shift and go to state 125
+    statement_list                 shift and go to state 123
+    var_declaration                shift and go to state 124
+    statement                      shift and go to state 125
+    type_specifier                 shift and go to state 126
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -1966,7 +2003,7 @@ state 88
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 89
+state 90
 
     (45) if_stmt -> if LPAREN . rel_expression RPAREN statement
     (46) if_stmt -> if LPAREN . rel_expression RPAREN statement else statement
@@ -1986,32 +2023,34 @@ state 89
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    rel_expression                 shift and go to state 126
+    rel_expression                 shift and go to state 128
     add_expression                 shift and go to state 68
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 90
+state 91
 
     (49) while_stmt -> while LPAREN . rel_expression RPAREN statement
     (72) rel_expression -> . add_expression relop add_expression
@@ -2030,32 +2069,34 @@ state 90
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    rel_expression                 shift and go to state 127
+    rel_expression                 shift and go to state 129
     add_expression                 shift and go to state 68
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 91
+state 92
 
     (51) for_stmt -> for LPAREN . var_declaration rel_expression semicolon expression epsilon RPAREN statement
     (6) var_declaration -> . type_specifier var_decl_list SEMICOLON
@@ -2070,19 +2111,19 @@ state 91
     VOID            shift and go to state 9
     STRING          shift and go to state 10
 
-    var_declaration                shift and go to state 128
-    type_specifier                 shift and go to state 125
+    var_declaration                shift and go to state 130
+    type_specifier                 shift and go to state 126
 
-state 92
+state 93
 
     (43) do_while_stmt -> do statement . while LPAREN expression RPAREN
     (50) while -> . WHILE
 
     WHILE           shift and go to state 62
 
-    while                          shift and go to state 129
+    while                          shift and go to state 131
 
-state 93
+state 94
 
     (55) break_stmt -> BREAK SEMICOLON .
 
@@ -2111,7 +2152,7 @@ state 93
     ELSE            reduce using rule 55 (break_stmt -> BREAK SEMICOLON .)
 
 
-state 94
+state 95
 
     (56) expression -> var ASSIGN . expression
     (56) expression -> . var ASSIGN expression
@@ -2140,11 +2181,12 @@ state 94
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -2154,10 +2196,11 @@ state 94
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     var                            shift and go to state 59
-    expression                     shift and go to state 130
+    expression                     shift and go to state 132
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
     rel_expression                 shift and go to state 54
@@ -2169,7 +2212,7 @@ state 94
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 95
+state 96
 
     (57) expression -> var addopration_expression . expression
     (56) expression -> . var ASSIGN expression
@@ -2198,11 +2241,12 @@ state 95
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -2212,10 +2256,11 @@ state 95
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     var                            shift and go to state 59
-    expression                     shift and go to state 131
+    expression                     shift and go to state 133
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
     rel_expression                 shift and go to state 54
@@ -2227,7 +2272,7 @@ state 95
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 96
+state 97
 
     (58) expression -> var mulopration_expression . expression
     (56) expression -> . var ASSIGN expression
@@ -2256,11 +2301,12 @@ state 96
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -2270,10 +2316,11 @@ state 96
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     var                            shift and go to state 59
-    expression                     shift and go to state 132
+    expression                     shift and go to state 134
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
     rel_expression                 shift and go to state 54
@@ -2285,7 +2332,7 @@ state 96
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 97
+state 98
 
     (62) addopration_expression -> PLUS_ASSIGN .
 
@@ -2297,10 +2344,11 @@ state 97
     TRUE            reduce using rule 62 (addopration_expression -> PLUS_ASSIGN .)
     FALSE           reduce using rule 62 (addopration_expression -> PLUS_ASSIGN .)
     NUMBER          reduce using rule 62 (addopration_expression -> PLUS_ASSIGN .)
+    STRING          reduce using rule 62 (addopration_expression -> PLUS_ASSIGN .)
     FLOAT_NUMBER    reduce using rule 62 (addopration_expression -> PLUS_ASSIGN .)
 
 
-state 98
+state 99
 
     (63) addopration_expression -> MINUS_ASSIGN .
 
@@ -2312,10 +2360,11 @@ state 98
     TRUE            reduce using rule 63 (addopration_expression -> MINUS_ASSIGN .)
     FALSE           reduce using rule 63 (addopration_expression -> MINUS_ASSIGN .)
     NUMBER          reduce using rule 63 (addopration_expression -> MINUS_ASSIGN .)
+    STRING          reduce using rule 63 (addopration_expression -> MINUS_ASSIGN .)
     FLOAT_NUMBER    reduce using rule 63 (addopration_expression -> MINUS_ASSIGN .)
 
 
-state 99
+state 100
 
     (64) mulopration_expression -> TIMES_ASSIGN .
 
@@ -2327,10 +2376,11 @@ state 99
     TRUE            reduce using rule 64 (mulopration_expression -> TIMES_ASSIGN .)
     FALSE           reduce using rule 64 (mulopration_expression -> TIMES_ASSIGN .)
     NUMBER          reduce using rule 64 (mulopration_expression -> TIMES_ASSIGN .)
+    STRING          reduce using rule 64 (mulopration_expression -> TIMES_ASSIGN .)
     FLOAT_NUMBER    reduce using rule 64 (mulopration_expression -> TIMES_ASSIGN .)
 
 
-state 100
+state 101
 
     (65) mulopration_expression -> DIVIDE_ASSIGN .
 
@@ -2342,10 +2392,11 @@ state 100
     TRUE            reduce using rule 65 (mulopration_expression -> DIVIDE_ASSIGN .)
     FALSE           reduce using rule 65 (mulopration_expression -> DIVIDE_ASSIGN .)
     NUMBER          reduce using rule 65 (mulopration_expression -> DIVIDE_ASSIGN .)
+    STRING          reduce using rule 65 (mulopration_expression -> DIVIDE_ASSIGN .)
     FLOAT_NUMBER    reduce using rule 65 (mulopration_expression -> DIVIDE_ASSIGN .)
 
 
-state 101
+state 102
 
     (68) simple_expression -> simple_expression AND . unary_rel_expression
     (70) unary_rel_expression -> . NOTEQUAL unary_rel_expression
@@ -2366,34 +2417,36 @@ state 101
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     NOTEQUAL        shift and go to state 67
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    unary_rel_expression           shift and go to state 133
+    unary_rel_expression           shift and go to state 135
     rel_expression                 shift and go to state 54
     add_expression                 shift and go to state 68
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 102
+state 103
 
     (70) unary_rel_expression -> NOTEQUAL unary_rel_expression .
 
@@ -2403,7 +2456,7 @@ state 102
     COMMA           reduce using rule 70 (unary_rel_expression -> NOTEQUAL unary_rel_expression .)
 
 
-state 103
+state 104
 
     (91) factor -> var .
 
@@ -2423,11 +2476,11 @@ state 103
     COMMA           reduce using rule 91 (factor -> var .)
 
 
-state 104
+state 105
 
     (66) var -> ID .
     (67) var -> ID . OPENBR NUMBER CLOSEBR
-    (98) call -> ID . LPAREN args RPAREN
+    (99) call -> ID . LPAREN args RPAREN
 
     TIMES           reduce using rule 66 (var -> ID .)
     DIVIDE          reduce using rule 66 (var -> ID .)
@@ -2443,11 +2496,11 @@ state 104
     SEMICOLON       reduce using rule 66 (var -> ID .)
     RPAREN          reduce using rule 66 (var -> ID .)
     COMMA           reduce using rule 66 (var -> ID .)
-    OPENBR          shift and go to state 84
-    LPAREN          shift and go to state 85
+    OPENBR          shift and go to state 85
+    LPAREN          shift and go to state 86
 
 
-state 105
+state 106
 
     (72) rel_expression -> add_expression relop . add_expression
     (80) add_expression -> . add_expression addop term
@@ -2464,31 +2517,33 @@ state 105
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    add_expression                 shift and go to state 134
+    add_expression                 shift and go to state 136
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 106
+state 107
 
     (80) add_expression -> add_expression addop . term
     (84) term -> . term mulop unary_expression
@@ -2503,30 +2558,32 @@ state 106
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     addop                          shift and go to state 69
-    term                           shift and go to state 135
+    term                           shift and go to state 137
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 107
+state 108
 
     (74) relop -> EQUALS .
 
@@ -2537,10 +2594,11 @@ state 107
     TRUE            reduce using rule 74 (relop -> EQUALS .)
     FALSE           reduce using rule 74 (relop -> EQUALS .)
     NUMBER          reduce using rule 74 (relop -> EQUALS .)
+    STRING          reduce using rule 74 (relop -> EQUALS .)
     FLOAT_NUMBER    reduce using rule 74 (relop -> EQUALS .)
 
 
-state 108
+state 109
 
     (75) relop -> LESS .
 
@@ -2551,10 +2609,11 @@ state 108
     TRUE            reduce using rule 75 (relop -> LESS .)
     FALSE           reduce using rule 75 (relop -> LESS .)
     NUMBER          reduce using rule 75 (relop -> LESS .)
+    STRING          reduce using rule 75 (relop -> LESS .)
     FLOAT_NUMBER    reduce using rule 75 (relop -> LESS .)
 
 
-state 109
+state 110
 
     (76) relop -> LARGE .
 
@@ -2565,10 +2624,11 @@ state 109
     TRUE            reduce using rule 76 (relop -> LARGE .)
     FALSE           reduce using rule 76 (relop -> LARGE .)
     NUMBER          reduce using rule 76 (relop -> LARGE .)
+    STRING          reduce using rule 76 (relop -> LARGE .)
     FLOAT_NUMBER    reduce using rule 76 (relop -> LARGE .)
 
 
-state 110
+state 111
 
     (77) relop -> LARGETHAN .
 
@@ -2579,10 +2639,11 @@ state 110
     TRUE            reduce using rule 77 (relop -> LARGETHAN .)
     FALSE           reduce using rule 77 (relop -> LARGETHAN .)
     NUMBER          reduce using rule 77 (relop -> LARGETHAN .)
+    STRING          reduce using rule 77 (relop -> LARGETHAN .)
     FLOAT_NUMBER    reduce using rule 77 (relop -> LARGETHAN .)
 
 
-state 111
+state 112
 
     (78) relop -> LESSTHAN .
 
@@ -2593,10 +2654,11 @@ state 111
     TRUE            reduce using rule 78 (relop -> LESSTHAN .)
     FALSE           reduce using rule 78 (relop -> LESSTHAN .)
     NUMBER          reduce using rule 78 (relop -> LESSTHAN .)
+    STRING          reduce using rule 78 (relop -> LESSTHAN .)
     FLOAT_NUMBER    reduce using rule 78 (relop -> LESSTHAN .)
 
 
-state 112
+state 113
 
     (79) relop -> NOTEQUAL .
 
@@ -2607,10 +2669,11 @@ state 112
     TRUE            reduce using rule 79 (relop -> NOTEQUAL .)
     FALSE           reduce using rule 79 (relop -> NOTEQUAL .)
     NUMBER          reduce using rule 79 (relop -> NOTEQUAL .)
+    STRING          reduce using rule 79 (relop -> NOTEQUAL .)
     FLOAT_NUMBER    reduce using rule 79 (relop -> NOTEQUAL .)
 
 
-state 113
+state 114
 
     (88) unary_expression -> addop unary_expression .
 
@@ -2630,7 +2693,7 @@ state 113
     COMMA           reduce using rule 88 (unary_expression -> addop unary_expression .)
 
 
-state 114
+state 115
 
     (84) term -> term mulop . unary_expression
     (88) unary_expression -> . addop unary_expression
@@ -2643,29 +2706,31 @@ state 114
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    unary_expression               shift and go to state 136
+    unary_expression               shift and go to state 138
     addop                          shift and go to state 69
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 115
+state 116
 
     (86) mulop -> TIMES .
 
@@ -2676,10 +2741,11 @@ state 115
     TRUE            reduce using rule 86 (mulop -> TIMES .)
     FALSE           reduce using rule 86 (mulop -> TIMES .)
     NUMBER          reduce using rule 86 (mulop -> TIMES .)
+    STRING          reduce using rule 86 (mulop -> TIMES .)
     FLOAT_NUMBER    reduce using rule 86 (mulop -> TIMES .)
 
 
-state 116
+state 117
 
     (87) mulop -> DIVIDE .
 
@@ -2690,41 +2756,42 @@ state 116
     TRUE            reduce using rule 87 (mulop -> DIVIDE .)
     FALSE           reduce using rule 87 (mulop -> DIVIDE .)
     NUMBER          reduce using rule 87 (mulop -> DIVIDE .)
+    STRING          reduce using rule 87 (mulop -> DIVIDE .)
     FLOAT_NUMBER    reduce using rule 87 (mulop -> DIVIDE .)
-
-
-state 117
-
-    (67) var -> ID OPENBR NUMBER . CLOSEBR
-
-    CLOSEBR         shift and go to state 137
 
 
 state 118
 
-    (98) call -> ID LPAREN args . RPAREN
+    (67) var -> ID OPENBR NUMBER . CLOSEBR
 
-    RPAREN          shift and go to state 138
+    CLOSEBR         shift and go to state 139
 
 
 state 119
 
-    (99) args -> args_list .
-    (101) args_list -> args_list . COMMA expression
+    (99) call -> ID LPAREN args . RPAREN
 
-    RPAREN          reduce using rule 99 (args -> args_list .)
-    COMMA           shift and go to state 139
+    RPAREN          shift and go to state 140
 
 
 state 120
 
-    (102) args_list -> expression .
+    (100) args -> args_list .
+    (102) args_list -> args_list . COMMA expression
 
-    COMMA           reduce using rule 102 (args_list -> expression .)
-    RPAREN          reduce using rule 102 (args_list -> expression .)
+    RPAREN          reduce using rule 100 (args -> args_list .)
+    COMMA           shift and go to state 141
 
 
 state 121
+
+    (103) args_list -> expression .
+
+    COMMA           reduce using rule 103 (args_list -> expression .)
+    RPAREN          reduce using rule 103 (args_list -> expression .)
+
+
+state 122
 
     (90) factor -> LPAREN expression RPAREN .
 
@@ -2744,7 +2811,7 @@ state 121
     COMMA           reduce using rule 90 (factor -> LPAREN expression RPAREN .)
 
 
-state 122
+state 123
 
     (29) compound_stmt -> OBRACELET local_declarations statement_list . local_declarations CBRACELET
     (30) local_declarations -> . local_declarations var_declaration
@@ -2756,9 +2823,9 @@ state 122
     VOID            reduce using rule 31 (local_declarations -> .)
     STRING          reduce using rule 31 (local_declarations -> .)
 
-    local_declarations             shift and go to state 140
+    local_declarations             shift and go to state 142
 
-state 123
+state 124
 
     (30) local_declarations -> local_declarations var_declaration .
 
@@ -2785,7 +2852,7 @@ state 123
     CBRACELET       reduce using rule 30 (local_declarations -> local_declarations var_declaration .)
 
 
-state 124
+state 125
 
     (32) statement_list -> statement . statement_list
     (32) statement_list -> . statement statement_list
@@ -2836,17 +2903,18 @@ state 124
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
+  ! shift/reduce conflict for STRING resolved as shift
     CBRACELET       reduce using rule 33 (statement_list -> .)
     INT             reduce using rule 33 (statement_list -> .)
     FLOAT           reduce using rule 33 (statement_list -> .)
     VOID            reduce using rule 33 (statement_list -> .)
-    STRING          reduce using rule 33 (statement_list -> .)
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
     BREAK           shift and go to state 58
@@ -2862,10 +2930,13 @@ state 124
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    statement                      shift and go to state 124
-    statement_list                 shift and go to state 141
+  ! STRING          [ reduce using rule 33 (statement_list -> .) ]
+
+    statement                      shift and go to state 125
+    statement_list                 shift and go to state 143
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -2890,7 +2961,7 @@ state 124
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 125
+state 126
 
     (6) var_declaration -> type_specifier . var_decl_list SEMICOLON
     (7) var_declaration -> type_specifier . error SEMICOLON
@@ -2909,22 +2980,43 @@ state 125
     var_decl_list                  shift and go to state 12
     var_decl_id                    shift and go to state 15
 
-state 126
+state 127
+
+    (19) type_specifier -> STRING .
+    (97) constant -> STRING .
+
+    error           reduce using rule 19 (type_specifier -> STRING .)
+    ID              reduce using rule 19 (type_specifier -> STRING .)
+    TIMES           reduce using rule 97 (constant -> STRING .)
+    DIVIDE          reduce using rule 97 (constant -> STRING .)
+    EQUALS          reduce using rule 97 (constant -> STRING .)
+    LESS            reduce using rule 97 (constant -> STRING .)
+    LARGE           reduce using rule 97 (constant -> STRING .)
+    LARGETHAN       reduce using rule 97 (constant -> STRING .)
+    LESSTHAN        reduce using rule 97 (constant -> STRING .)
+    NOTEQUAL        reduce using rule 97 (constant -> STRING .)
+    PLUS            reduce using rule 97 (constant -> STRING .)
+    MINUS           reduce using rule 97 (constant -> STRING .)
+    AND             reduce using rule 97 (constant -> STRING .)
+    SEMICOLON       reduce using rule 97 (constant -> STRING .)
+
+
+state 128
 
     (45) if_stmt -> if LPAREN rel_expression . RPAREN statement
     (46) if_stmt -> if LPAREN rel_expression . RPAREN statement else statement
 
-    RPAREN          shift and go to state 142
+    RPAREN          shift and go to state 144
 
 
-state 127
+state 129
 
     (49) while_stmt -> while LPAREN rel_expression . RPAREN statement
 
-    RPAREN          shift and go to state 143
+    RPAREN          shift and go to state 145
 
 
-state 128
+state 130
 
     (51) for_stmt -> for LPAREN var_declaration . rel_expression semicolon expression epsilon RPAREN statement
     (72) rel_expression -> . add_expression relop add_expression
@@ -2943,39 +3035,41 @@ state 128
     (93) factor -> . constant
     (66) var -> . ID
     (67) var -> . ID OPENBR NUMBER CLOSEBR
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
     LPAREN          shift and go to state 41
-    ID              shift and go to state 104
+    ID              shift and go to state 105
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    rel_expression                 shift and go to state 144
+    rel_expression                 shift and go to state 146
     add_expression                 shift and go to state 68
     addop                          shift and go to state 69
     term                           shift and go to state 70
     unary_expression               shift and go to state 71
     factor                         shift and go to state 72
-    var                            shift and go to state 103
+    var                            shift and go to state 104
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 129
+state 131
 
     (43) do_while_stmt -> do statement while . LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 145
+    LPAREN          shift and go to state 147
 
 
-state 130
+state 132
 
     (56) expression -> var ASSIGN expression .
 
@@ -2984,7 +3078,7 @@ state 130
     COMMA           reduce using rule 56 (expression -> var ASSIGN expression .)
 
 
-state 131
+state 133
 
     (57) expression -> var addopration_expression expression .
 
@@ -2993,7 +3087,7 @@ state 131
     COMMA           reduce using rule 57 (expression -> var addopration_expression expression .)
 
 
-state 132
+state 134
 
     (58) expression -> var mulopration_expression expression .
 
@@ -3002,7 +3096,7 @@ state 132
     COMMA           reduce using rule 58 (expression -> var mulopration_expression expression .)
 
 
-state 133
+state 135
 
     (68) simple_expression -> simple_expression AND unary_rel_expression .
 
@@ -3012,7 +3106,7 @@ state 133
     COMMA           reduce using rule 68 (simple_expression -> simple_expression AND unary_rel_expression .)
 
 
-state 134
+state 136
 
     (72) rel_expression -> add_expression relop add_expression .
     (80) add_expression -> add_expression . addop term
@@ -3026,9 +3120,9 @@ state 134
     PLUS            shift and go to state 73
     MINUS           shift and go to state 74
 
-    addop                          shift and go to state 106
+    addop                          shift and go to state 107
 
-state 135
+state 137
 
     (80) add_expression -> add_expression addop term .
     (84) term -> term . mulop unary_expression
@@ -3047,12 +3141,12 @@ state 135
     SEMICOLON       reduce using rule 80 (add_expression -> add_expression addop term .)
     RPAREN          reduce using rule 80 (add_expression -> add_expression addop term .)
     COMMA           reduce using rule 80 (add_expression -> add_expression addop term .)
-    TIMES           shift and go to state 115
-    DIVIDE          shift and go to state 116
+    TIMES           shift and go to state 116
+    DIVIDE          shift and go to state 117
 
-    mulop                          shift and go to state 114
+    mulop                          shift and go to state 115
 
-state 136
+state 138
 
     (84) term -> term mulop unary_expression .
 
@@ -3072,7 +3166,7 @@ state 136
     COMMA           reduce using rule 84 (term -> term mulop unary_expression .)
 
 
-state 137
+state 139
 
     (67) var -> ID OPENBR NUMBER CLOSEBR .
 
@@ -3097,29 +3191,29 @@ state 137
     COMMA           reduce using rule 67 (var -> ID OPENBR NUMBER CLOSEBR .)
 
 
-state 138
+state 140
 
-    (98) call -> ID LPAREN args RPAREN .
+    (99) call -> ID LPAREN args RPAREN .
 
-    TIMES           reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    DIVIDE          reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    EQUALS          reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    LESS            reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    LARGE           reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    LARGETHAN       reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    LESSTHAN        reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    NOTEQUAL        reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    PLUS            reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    MINUS           reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    AND             reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    SEMICOLON       reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    RPAREN          reduce using rule 98 (call -> ID LPAREN args RPAREN .)
-    COMMA           reduce using rule 98 (call -> ID LPAREN args RPAREN .)
+    TIMES           reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    DIVIDE          reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    EQUALS          reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    LESS            reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    LARGE           reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    LARGETHAN       reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    LESSTHAN        reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    NOTEQUAL        reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    PLUS            reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    MINUS           reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    AND             reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    SEMICOLON       reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    RPAREN          reduce using rule 99 (call -> ID LPAREN args RPAREN .)
+    COMMA           reduce using rule 99 (call -> ID LPAREN args RPAREN .)
 
 
-state 139
+state 141
 
-    (101) args_list -> args_list COMMA . expression
+    (102) args_list -> args_list COMMA . expression
     (56) expression -> . var ASSIGN expression
     (57) expression -> . var addopration_expression expression
     (58) expression -> . var mulopration_expression expression
@@ -3146,11 +3240,12 @@ state 139
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -3160,9 +3255,10 @@ state 139
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    expression                     shift and go to state 146
+    expression                     shift and go to state 148
     var                            shift and go to state 59
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
@@ -3175,7 +3271,7 @@ state 139
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 140
+state 142
 
     (29) compound_stmt -> OBRACELET local_declarations statement_list local_declarations . CBRACELET
     (30) local_declarations -> local_declarations . var_declaration
@@ -3186,16 +3282,16 @@ state 140
     (18) type_specifier -> . VOID
     (19) type_specifier -> . STRING
 
-    CBRACELET       shift and go to state 147
+    CBRACELET       shift and go to state 149
     INT             shift and go to state 7
     FLOAT           shift and go to state 8
     VOID            shift and go to state 9
     STRING          shift and go to state 10
 
-    var_declaration                shift and go to state 123
-    type_specifier                 shift and go to state 125
+    var_declaration                shift and go to state 124
+    type_specifier                 shift and go to state 126
 
-state 141
+state 143
 
     (32) statement_list -> statement statement_list .
 
@@ -3206,7 +3302,7 @@ state 141
     STRING          reduce using rule 32 (statement_list -> statement statement_list .)
 
 
-state 142
+state 144
 
     (45) if_stmt -> if LPAREN rel_expression RPAREN . statement
     (46) if_stmt -> if LPAREN rel_expression RPAREN . statement else statement
@@ -3256,11 +3352,12 @@ state 142
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -3277,11 +3374,12 @@ state 142
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     if                             shift and go to state 53
     rel_expression                 shift and go to state 54
-    statement                      shift and go to state 148
+    statement                      shift and go to state 150
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -3304,7 +3402,7 @@ state 142
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 143
+state 145
 
     (49) while_stmt -> while LPAREN rel_expression RPAREN . statement
     (34) statement -> . expression_stmt
@@ -3353,11 +3451,12 @@ state 143
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -3374,11 +3473,12 @@ state 143
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     while                          shift and go to state 55
     rel_expression                 shift and go to state 54
-    statement                      shift and go to state 149
+    statement                      shift and go to state 151
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -3401,16 +3501,16 @@ state 143
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 144
+state 146
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression . semicolon expression epsilon RPAREN statement
     (52) semicolon -> . SEMICOLON
 
-    SEMICOLON       shift and go to state 151
+    SEMICOLON       shift and go to state 153
 
-    semicolon                      shift and go to state 150
+    semicolon                      shift and go to state 152
 
-state 145
+state 147
 
     (43) do_while_stmt -> do statement while LPAREN . expression RPAREN
     (56) expression -> . var ASSIGN expression
@@ -3439,11 +3539,12 @@ state 145
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -3453,9 +3554,10 @@ state 145
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
-    expression                     shift and go to state 152
+    expression                     shift and go to state 154
     var                            shift and go to state 59
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
@@ -3468,15 +3570,15 @@ state 145
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 146
+state 148
 
-    (101) args_list -> args_list COMMA expression .
+    (102) args_list -> args_list COMMA expression .
 
-    COMMA           reduce using rule 101 (args_list -> args_list COMMA expression .)
-    RPAREN          reduce using rule 101 (args_list -> args_list COMMA expression .)
+    COMMA           reduce using rule 102 (args_list -> args_list COMMA expression .)
+    RPAREN          reduce using rule 102 (args_list -> args_list COMMA expression .)
 
 
-state 147
+state 149
 
     (29) compound_stmt -> OBRACELET local_declarations statement_list local_declarations CBRACELET .
 
@@ -3505,7 +3607,7 @@ state 147
     ELSE            reduce using rule 29 (compound_stmt -> OBRACELET local_declarations statement_list local_declarations CBRACELET .)
 
 
-state 148
+state 150
 
     (45) if_stmt -> if LPAREN rel_expression RPAREN statement .
     (46) if_stmt -> if LPAREN rel_expression RPAREN statement . else statement
@@ -3534,13 +3636,13 @@ state 148
     NUMBER          reduce using rule 45 (if_stmt -> if LPAREN rel_expression RPAREN statement .)
     FLOAT_NUMBER    reduce using rule 45 (if_stmt -> if LPAREN rel_expression RPAREN statement .)
     CBRACELET       reduce using rule 45 (if_stmt -> if LPAREN rel_expression RPAREN statement .)
-    ELSE            shift and go to state 154
+    ELSE            shift and go to state 156
 
   ! ELSE            [ reduce using rule 45 (if_stmt -> if LPAREN rel_expression RPAREN statement .) ]
 
-    else                           shift and go to state 153
+    else                           shift and go to state 155
 
-state 149
+state 151
 
     (49) while_stmt -> while LPAREN rel_expression RPAREN statement .
 
@@ -3569,7 +3671,7 @@ state 149
     ELSE            reduce using rule 49 (while_stmt -> while LPAREN rel_expression RPAREN statement .)
 
 
-state 150
+state 152
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression semicolon . expression epsilon RPAREN statement
     (56) expression -> . var ASSIGN expression
@@ -3598,11 +3700,12 @@ state 150
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     ID              shift and go to state 40
     NOTEQUAL        shift and go to state 67
@@ -3612,10 +3715,11 @@ state 150
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     rel_expression                 shift and go to state 54
-    expression                     shift and go to state 155
+    expression                     shift and go to state 157
     var                            shift and go to state 59
     simple_expression              shift and go to state 60
     unary_rel_expression           shift and go to state 66
@@ -3627,7 +3731,7 @@ state 150
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 151
+state 153
 
     (52) semicolon -> SEMICOLON .
 
@@ -3639,17 +3743,18 @@ state 151
     TRUE            reduce using rule 52 (semicolon -> SEMICOLON .)
     FALSE           reduce using rule 52 (semicolon -> SEMICOLON .)
     NUMBER          reduce using rule 52 (semicolon -> SEMICOLON .)
+    STRING          reduce using rule 52 (semicolon -> SEMICOLON .)
     FLOAT_NUMBER    reduce using rule 52 (semicolon -> SEMICOLON .)
 
 
-state 152
+state 154
 
     (43) do_while_stmt -> do statement while LPAREN expression . RPAREN
 
-    RPAREN          shift and go to state 156
+    RPAREN          shift and go to state 158
 
 
-state 153
+state 155
 
     (46) if_stmt -> if LPAREN rel_expression RPAREN statement else . statement
     (34) statement -> . expression_stmt
@@ -3698,11 +3803,12 @@ state 153
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -3719,11 +3825,12 @@ state 153
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     if                             shift and go to state 53
     rel_expression                 shift and go to state 54
-    statement                      shift and go to state 157
+    statement                      shift and go to state 159
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -3746,7 +3853,7 @@ state 153
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 154
+state 156
 
     (48) else -> ELSE .
 
@@ -3765,19 +3872,20 @@ state 154
     TRUE            reduce using rule 48 (else -> ELSE .)
     FALSE           reduce using rule 48 (else -> ELSE .)
     NUMBER          reduce using rule 48 (else -> ELSE .)
+    STRING          reduce using rule 48 (else -> ELSE .)
     FLOAT_NUMBER    reduce using rule 48 (else -> ELSE .)
 
 
-state 155
+state 157
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression semicolon expression . epsilon RPAREN statement
     (53) epsilon -> .
 
     RPAREN          reduce using rule 53 (epsilon -> .)
 
-    epsilon                        shift and go to state 158
+    epsilon                        shift and go to state 160
 
-state 156
+state 158
 
     (43) do_while_stmt -> do statement while LPAREN expression RPAREN .
 
@@ -3806,7 +3914,7 @@ state 156
     ELSE            reduce using rule 43 (do_while_stmt -> do statement while LPAREN expression RPAREN .)
 
 
-state 157
+state 159
 
     (46) if_stmt -> if LPAREN rel_expression RPAREN statement else statement .
 
@@ -3835,14 +3943,14 @@ state 157
     ELSE            reduce using rule 46 (if_stmt -> if LPAREN rel_expression RPAREN statement else statement .)
 
 
-state 158
+state 160
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression semicolon expression epsilon . RPAREN statement
 
-    RPAREN          shift and go to state 159
+    RPAREN          shift and go to state 161
 
 
-state 159
+state 161
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression semicolon expression epsilon RPAREN . statement
     (34) statement -> . expression_stmt
@@ -3891,11 +3999,12 @@ state 159
     (91) factor -> . var
     (92) factor -> . call
     (93) factor -> . constant
-    (98) call -> . ID LPAREN args RPAREN
+    (99) call -> . ID LPAREN args RPAREN
     (94) constant -> . TRUE
     (95) constant -> . FALSE
     (96) constant -> . NUMBER
-    (97) constant -> . FLOAT_NUMBER
+    (97) constant -> . STRING
+    (98) constant -> . FLOAT_NUMBER
 
     SEMICOLON       shift and go to state 51
     OBRACELET       shift and go to state 52
@@ -3912,12 +4021,13 @@ state 159
     TRUE            shift and go to state 77
     FALSE           shift and go to state 78
     NUMBER          shift and go to state 65
-    FLOAT_NUMBER    shift and go to state 79
+    STRING          shift and go to state 79
+    FLOAT_NUMBER    shift and go to state 80
 
     for                            shift and go to state 56
     rel_expression                 shift and go to state 54
     expression                     shift and go to state 50
-    statement                      shift and go to state 160
+    statement                      shift and go to state 162
     expression_stmt                shift and go to state 43
     compound_stmt                  shift and go to state 44
     if_stmt                        shift and go to state 45
@@ -3939,7 +4049,7 @@ state 159
     call                           shift and go to state 75
     constant                       shift and go to state 76
 
-state 160
+state 162
 
     (51) for_stmt -> for LPAREN var_declaration rel_expression semicolon expression epsilon RPAREN statement .
 
@@ -3971,8 +4081,9 @@ WARNING:
 WARNING: Conflicts:
 WARNING: 
 WARNING: shift/reduce conflict for COMMA in state 33 resolved as shift
-WARNING: shift/reduce conflict for INT in state 88 resolved as shift
-WARNING: shift/reduce conflict for FLOAT in state 88 resolved as shift
-WARNING: shift/reduce conflict for VOID in state 88 resolved as shift
-WARNING: shift/reduce conflict for STRING in state 88 resolved as shift
-WARNING: shift/reduce conflict for ELSE in state 148 resolved as shift
+WARNING: shift/reduce conflict for INT in state 89 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 89 resolved as shift
+WARNING: shift/reduce conflict for VOID in state 89 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 89 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 125 resolved as shift
+WARNING: shift/reduce conflict for ELSE in state 150 resolved as shift
