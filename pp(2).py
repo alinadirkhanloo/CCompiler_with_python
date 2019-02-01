@@ -260,13 +260,13 @@ def typecheck(ch1, ch2):
             break
 
     if type1 == ['INT'] and type2 != ['NUMBER']:
-        print("error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2, "to ", ch1)
         exit(1)
     elif type1 == ['FLOAT'] and type2 != ['FLOAT_NUMBER']:
-        print("error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2, "to ", ch1)
         exit(1)
         type1 == ['STRING'] and type2 != ['STRING']
-        print("error : cannot assign ", ch2 ,"to ",ch1)
+        print("error : cannot assign ", ch2, "to ", ch1)
         exit(1)
 
 
@@ -285,7 +285,7 @@ def typecheck_for_2id(ch1, ch2):
                 if [scope_number] >= m[3:4]:
                     type2 = m[4:5]
                     break
-    if type1 != type2 and type2!='':
+    if type1 != type2 and type2 != '':
         print("error: type error line number ", line_number)
         exit(1)
 
@@ -344,7 +344,6 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print("error: type error cant be string", line_number, p[1])
 
 
 def p_var_decl_list_loop(p):
@@ -412,32 +411,32 @@ def p_params(p):
 
 def p_params_eps(p):
     'params : '
-    # print("p_params_eps")
+    print("p_params_eps")
 
 
 def p_param_list__loop(p):
     'param_list : param_list COMMA param_type_list '
-    # print("p_param_list__loop")
+    print("p_param_list__loop")
 
 
 def p_param_list(p):
     'param_list : param_type_list'
-    # print("p_param_list")
+    print("p_param_list")
 
 
 def p_param_type_list(p):
     '''param_type_list : type_specifier param_id_list'''
-    # print("p_param_type_list")
+    print("p_param_type_list")
 
 
 def p_param_id_list_loop(p):
     'param_id_list : param_id_list COMMA param_id'
-    # print("p_param_id_list_loop")
+    print("p_param_id_list_loop")
 
 
 def p_param_id_list(p):
     'param_id_list : param_id'
-    # print("p_param_id_list")
+    print("p_param_id_list")
 
 
 def p_param_id(p):
@@ -463,7 +462,7 @@ def p_local_declarations_eps(p):
 
 def p_statement_list(p):
     'statement_list : statement statement_list'
-    print("p_statement_list", scope_number)
+    print("p_statement_list")
 
 
 def p_statement_list_eps(p):
@@ -504,7 +503,7 @@ def p_do(p):
     global doindex1
     doindex1 = len(PB)
     loop.push(p[1])
-    # print("p_do")
+    print("p_do")
 
 
 def p_if_stmt(p):
@@ -517,10 +516,10 @@ def p_if_stmt(p):
 def p_elif_stmt(p):
     'if_stmt : if LPAREN rel_expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
-    t = len(PB) - index2  #else statement size
+    t = len(PB) - index2  # else statement size
     PB.insert(len(PB) - t, ["JP", len(PB) + 2, ])
     increment_label_number()
-    # print("p_elif_stmt")
+    print("p_elif_stmt")
 
 
 def p_if(p):
@@ -534,7 +533,6 @@ def p_else(p):
     'else : ELSE '
     global index2
     index2 = len(PB) + 1
-    # name="else"
     print("p_else")
 
 
@@ -551,9 +549,6 @@ def p_while(p):
     global windex1
     windex1 = len(PB)
     print("p_while", id(p[0]))
-
-
-
 
 
 def p_for_stmt(p):
@@ -607,7 +602,7 @@ def p_expression(p):
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
-    if p[3]=="NUMBER" or p[3]=="STRING" or p[3]=="ID":
+    if p[3] == "NUMBER" or p[3] == "STRING" or p[3] == "ID":
         typecheck(p[1], p[3])
         typecheck_for_2id(p[1], p[3])
     if p[2] == '=':
@@ -644,14 +639,11 @@ def p_var(p):
 
 def p_var_Array(p):
     'var : ID OPENBR NUMBER CLOSEBR'
-    # check_assign_table(p[1])
-    p[0] = (" ARRAY ", p[1], " SIZE: ", p[3])
     print("p_var_Array")
 
 
 def p_simple_expression(p):
     'simple_expression : simple_expression AND unary_rel_expression'
-    # p[0]=(p[1],p[3])
     print("p_simple_expression")
 
 
@@ -663,7 +655,6 @@ def p_simple_expression_unary(p):
 
 def p_note_unary_rel_expression(p):
     'unary_rel_expression : NOTEQUAL unary_rel_expression'
-    # p[0]=('!',p[1])
     print("p_note_unary_rel_expression")
 
 
@@ -677,9 +668,7 @@ def p_rel_expression(p):
     'rel_expression :  add_expression relop add_expression '
     PB.append([p[2], p[1], p[3], 'temp' + str(temp_counter)])
     p[0] = [p[2], p[1], p[3], 'temp' + str(temp_counter)]
-    if_index1 = len(PB)
     addU_one()
-    # generate_code(p[2], p[1], p[3])
     print("p_rel_expression")
 
 
@@ -791,20 +780,19 @@ def p_constant_float_number(p):
 def p_call(p):
     '''call : ID LPAREN args RPAREN'''
     check_assign_table(p[1])
-    # p[0] = ('CALL', p[1], "args=", p[3])
     print("p_call")
 
 
 def p_args(p):
     '''args : args_list
     |'''
-    # print("p_args")
+    print("p_args")
 
 
 def p_args_list(p):
     '''args_list : args_list COMMA expression
     | expression'''
-    # print("p_args_list")
+    print("p_args_list")
 
 
 def p_error(p):
@@ -834,4 +822,4 @@ if __name__ == "__main__":
         else:
             print("message: ", k, "->", str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
 
-    print("message: ", k+1, "-> halt")
+    print("message: ", k + 1, "-> halt")

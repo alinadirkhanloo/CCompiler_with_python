@@ -1,4 +1,4 @@
-int x=5;
+int x=0;
 int n=0;
 string str="M";
 int m (){
