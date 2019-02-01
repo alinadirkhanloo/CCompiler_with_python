@@ -243,7 +243,7 @@ def typecheck(ch1, ch2):
     type2 = ''
     for m in symbolTable:
         if m[0:1] == ['ID']:
-            if ch2 in m[1:2]:
+            if ch1 in m[1:2]:
                 if [scope_number] <= m[3:4]:
                     type2 = m[4:5]
                     break
@@ -269,24 +269,24 @@ def typecheck(ch1, ch2):
                       ch2, "cant be string", "line number ", line_number)
                 exit(1)
 
+
 def typecheck_for_2id(ch1, ch2):
     type1 = ''
     type2 = ''
     for m in symbolTable:
-            if ch1 in m[1:2]:
-                if [scope_number] >= m[3:4]:
-                    type1 = m[4:5]
-                    break
+        if ch1 in m[1:2]:
+            if [scope_number] >= m[3:4]:
+                type1 = m[4:5]
+                break
     for m in symbolTable:
-            if ch2 in m[1:2]:
-                if [scope_number] >= m[3:4]:
-                    type2 = m[4:5]
-                    break
-    if type1!=type2:
+        if ch2 in m[1:2]:
+            if [scope_number] >= m[3:4]:
+                type2 = m[4:5]
+                break
+    if type1 != type2:
         print(" type errrrrrrrrrrrrrrrrrrrrrrrorO ",
-                      ch2, "line number ", line_number)
+              ch2, "line number ", line_number)
         exit(1)
-
 
 
 def generate_code(action, p1, p3):
@@ -343,7 +343,7 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string",line_number,p[1])
+    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string", line_number, p[1])
 
 
 def p_var_decl_list_loop(p):
@@ -359,8 +359,8 @@ def p_var_decl_list(p):
 
 def p_var_decl_id(p):
     'var_decl_id : ID'
-    p[0]=p[1]
-    print("p_var_decl_id",p[1])
+    p[0] = p[1]
+    print("p_var_decl_id", p[1])
 
 
 def p_var_decl_array(p):
@@ -370,6 +370,7 @@ def p_var_decl_array(p):
     # p[0] = ("ASSIGN", p[1], p[3])
     print("p_var_decl_array")
 
+
 def p_var_decl_ids(p):
     '''var_decl_id : ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
@@ -377,18 +378,20 @@ def p_var_decl_ids(p):
     typecheck(p[1], p[3])
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
-    p[0]=p[1]
+    p[0] = p[1]
     print("p_var_decl_ids")
+
 
 def p_var_decl_assign_ids(p):
     'var_decl_id : ID ASSIGN ID'
     check_assign_table(p[1])
     check_assign_table(p[3])
-    typecheck_for_2id(p[1],p[3])
+    typecheck_for_2id(p[1], p[3])
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[3]
     print("p_var_decl_assign_idssssssssssssssssssssssssssssssssssssss")
+
 
 def p_type_specifier(p):
     '''type_specifier : INT
@@ -618,13 +621,14 @@ def p_expression(p):
     check_assign_table(p[1])
     if p[2] == '=':
         p[0] = generate_code('=', p[1], p[3], )
-    print("p_expression",p[1],p[2],p[3])
+    print("p_expression", p[1], p[2], p[3])
 
 
 def p_expression_simple(p):
     'expression : simple_expression '
     p[0] = p[1]
     print("p_expression_simple")
+
 
 def p_addopration_expression(p):
     ''' addopration_expression : PLUS_ASSIGN
@@ -644,7 +648,7 @@ def p_var(p):
     'var : ID'
     check_assign_table(p[1])
     p[0] = p[1]
-    print("p_varrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",p[1])
+    print("p_varrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", p[1])
 
 
 def p_var_Array(p):
@@ -807,7 +811,7 @@ def p_args_list(p):
 
 
 def p_error(p):
-    print("Syntax error at '%s'" % p.value,"line number ",line_number)
+    print("Syntax error at '%s'" % p.value, "line number ", line_number)
 
 
 yacc.yacc()
@@ -819,16 +823,16 @@ if __name__ == "__main__":
     k = 0
     for m in PB:
         k += 1
-        print(k,m, "\n")
+        print(k, m, "\n")
     print((k + 1), "halt")
     print("**********************************************************\n")
-    k=0;
+    k = 0;
     for m in PB:
         k += 1
-        if m[0]=='=':
-            print(k,str(m[2])+" "+str(m[0])+" "+str(m[1]))
-        elif m[0]=='JPF':
-            print(k,str(m[0]) +" "+ str(m[1]) +" "+str(m[2]))
+        if m[0] == '=':
+            print(k, str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
+        elif m[0] == 'JPF':
+            print(k, str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
         else:
-            print(k, str(m[3]) +" = "+ str(m[1]) +" "+str(m[0])+" "+str(m[2]))
+            print(k, str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
     print((k + 1), "halt")
