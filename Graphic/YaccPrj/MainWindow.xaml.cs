@@ -57,7 +57,7 @@ namespace YaccPrj
 
                 else if (o.Contains("["))
                 {
-                    myResult.Add(o.Replace("message: ", ""));
+                    myResult.Add(o.Replace("message: ", "").Replace("[","").Replace("]",""));
                     listBox.Foreground = Brushes.DarkGreen;
                 }
             }
