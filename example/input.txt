@@ -3,9 +3,15 @@ int n=0;
 string str="M";
 int m (){
     if(x>5){
-    n=9/8+4;
+    n=9+8+4;
+    int v="hhh";
     }
-    if(n==5){
+    while(n==5){
         x=str;
     }
+    if(x==4)
+    {
+    x=0;
+    }
+
  }

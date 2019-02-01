@@ -35,6 +35,14 @@ index1 = 0
 index2 = 0
 doindex1 = 0
 windex = 0
+scope_number = 0
+counterU = 1
+scope_number
+label_number = 0
+line_number = 1
+if_else = False
+scope_counter=0
+
 reserved = {
     'if': 'IF',
     'else': 'ELSE',
@@ -107,12 +115,6 @@ t_OPENBR = r'\['
 t_CLOSEBR = r'\]'
 t_ignore = ' \t'
 
-scope_number = 0
-counterU = 1
-label_number = 0
-line_number = 1
-if_else = False
-
 
 def add_one():
     global scope_number
@@ -154,7 +156,6 @@ def t_newline(t):
 def t_OBRACELET(t):
     r'\{'
     add_one()
-    print("--------------------------------------------")
     return t
 
 
@@ -166,13 +167,13 @@ def t_CBRACELET(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("error: Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
 def t_STRING(t):
     r'"[a-zA-Z_0-9]*"'
-    # symbolTable.append([t.type, t.value, id(t.value), scope_number])
+    symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
@@ -194,12 +195,14 @@ def t_ID(t):
 def t_FLOAT_NUMBER(t):
     r'[0-9]+\.[0-9]+'
     t.value = float(t.value)
+    symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
 def t_NUMBER(t):
     r'[0-9]+'
     t.value = int(t.value)
+    symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
@@ -220,7 +223,7 @@ def check_table(ch, le, variable_type):
                     if variable_type == "none":
                         return 1
                     else:
-                        print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ", line_number)
+                        print("error: ",ch, " this used before in this scope line number ", line_number)
                         exit(1)
 
     return result
@@ -238,54 +241,23 @@ def check_assign_table(ch):
         exit(1)
 
 
-def typecheck(ch1, ch2):
-    type1 = ''
-    type2 = ''
-    for m in symbolTable:
-        if m[0:1] == ['ID']:
-            if ch1 in m[1:2]:
-                if [scope_number] <= m[3:4]:
-                    type2 = m[4:5]
-                    break
-    for m in symbolTable:
-        if m[2:3] == [id(ch2)]:
-            type1 = m[0:1]
-            break
-
-    if ch1 == 'int':
-        if type1 != ['NUMBER']:
-            if type1 == ['ID'] and type2 != ['NUMBER']:
-                print(" type error ", ch2, "cant be ", ch1, "line number ", line_number)
-                exit(1)
-    if ch1 == 'float':
-        if type1 != ['FLOAT_NUMBER']:
-            if type1 == ['ID'] and type2 != ['FLOAT']:
-                print(" type error ", ch2, "cant be ", ch1, "line number ", line_number)
-                exit(1)
-    if ch1 == 'string':
-        if type1 != ['STRING']:
-            if type1 == ['ID'] and type2 != ['STRING']:
-                print(" type error ",
-                      ch2, "cant be string", "line number ", line_number)
-                exit(1)
-
-
 def typecheck_for_2id(ch1, ch2):
     type1 = ''
     type2 = ''
     for m in symbolTable:
         if ch1 in m[1:2]:
-            if [scope_number] >= m[3:4]:
-                type1 = m[4:5]
-                break
+            if m[0:1] == ['ID']:
+                if [scope_number] >= m[3:4]:
+                    type1 = m[4:5]
+                    break
     for m in symbolTable:
         if ch2 in m[1:2]:
-            if [scope_number] >= m[3:4]:
-                type2 = m[4:5]
-                break
+            if m[0:1] == ['ID']:
+                if [scope_number] >= m[3:4]:
+                    type2 = m[4:5]
+                    break
     if type1 != type2:
-        print(" type errrrrrrrrrrrrrrrrrrrrrrrorO ",
-              ch2, "line number ", line_number)
+        print("error: type error line number ", line_number)
         exit(1)
 
 
@@ -335,7 +307,7 @@ def p_declaration_fun(p):
 def p_var_declaration(p):
     '''var_declaration : type_specifier var_decl_list SEMICOLON'''
     if p[1] == 'void':
-        print(" void cant use for thisssssssssssssssssssss")
+        print("error: void cant use for this")
         exit(1)
     p[0] = p[2]
     print("p_var_declaration", p[1], p[2])
@@ -343,7 +315,7 @@ def p_var_declaration(p):
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string", line_number, p[1])
+    print("error: type error cant be string", line_number, p[1])
 
 
 def p_var_decl_list_loop(p):
@@ -375,7 +347,7 @@ def p_var_decl_ids(p):
     '''var_decl_id : ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    typecheck(p[1], p[3])
+    # typecheck(p[1], p[3])
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[1]
@@ -390,7 +362,7 @@ def p_var_decl_assign_ids(p):
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[3]
-    print("p_var_decl_assign_idssssssssssssssssssssssssssssssssssssss")
+    print("p_var_decl_assign_ids")
 
 
 def p_type_specifier(p):
@@ -484,10 +456,6 @@ def p_statement(p):
     | for_stmt
     | do_while_stmt
     | break_stmt'''
-    if scope_number == 0:
-        p[0] = 'halt'
-    else:
-        p[0] = p[1]
     print("p_statement")
 
 
@@ -504,7 +472,7 @@ def p_expression_stmt_eps(p):
 
 def p_do_while_stmt(p):
     'do_while_stmt : do statement while LPAREN expression RPAREN'
-    PB.append(["if", p[5][3], doindex1 + 1])
+    PB.append(["JPT", p[5][3], doindex1 + 1])
     p[0] = p[5]
 
 
@@ -604,7 +572,7 @@ def p_for(p):
 def p_break_stmt(p):
     'break_stmt : BREAK SEMICOLON'
     if loop.isEmpty():
-        print("semantic error in break !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("error: semantic error in break")
         exit(1)
     p[0] = p[1]
 
@@ -619,6 +587,7 @@ def p_expression(p):
       | ID MINUSMINUS
       '''
     check_assign_table(p[1])
+    typecheck_for_2id(p[1], p[3])
     if p[2] == '=':
         p[0] = generate_code('=', p[1], p[3], )
     print("p_expression", p[1], p[2], p[3])
@@ -648,7 +617,7 @@ def p_var(p):
     'var : ID'
     check_assign_table(p[1])
     p[0] = p[1]
-    print("p_varrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", p[1])
+    print("p_var", p[1])
 
 
 def p_var_Array(p):
@@ -811,7 +780,7 @@ def p_args_list(p):
 
 
 def p_error(p):
-    print("Syntax error at '%s'" % p.value, "line number ", line_number)
+    print("error: Syntax error at '%s'" % p.value, "line number ", line_number)
 
 
 yacc.yacc()
@@ -821,18 +790,16 @@ if __name__ == "__main__":
     res = yacc.parse(data)
     print("********************************************************\n")
     k = 0
-    for m in PB:
+    for m in symbolTable:
         k += 1
-        print(k, m, "\n")
-    print((k + 1), "halt")
+        print(m, "\n")
     print("**********************************************************\n")
     k = 0;
     for m in PB:
         k += 1
         if m[0] == '=':
-            print(k, str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
+            print("message: ",k,"->", str(m[2]) + " " + str(m[0]) + " " + str(m[1]))
         elif m[0] == 'JPF':
-            print(k, str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
+            print("message: ",k,"->", str(m[0]) + " " + str(m[1]) + " " + str(m[2]))
         else:
-            print(k, str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
-    print((k + 1), "halt")
+            print("message: ",k,"->", str(m[3]) + " = " + str(m[1]) + " " + str(m[0]) + " " + str(m[2]))
