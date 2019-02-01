@@ -19,7 +19,7 @@ class Stack:
         return self.items.__len__()
 
     def getPeek(self):
-        if self.items.__len__() > 0:
+        if self.items.__len__()>0:
             return self.items.__getitem__(self.items.__len__() - 1)
         else:
             return "none"
@@ -50,36 +50,36 @@ reserved = {
     'do': 'DO'
 }
 tokens = (
-    'LESS',
-    'LARGE',
-    'ASSIGN',
-    'PLUS_ASSIGN',
-    'MINUS_ASSIGN',
-    'TIMES_ASSIGN',
-    'DIVIDE_ASSIGN',
-    'NUMBER',
-    'FLOAT_NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-    'OBRACELET',
-    'CBRACELET',
-    'ID',
-    'EQUALS',
-    'SEMICOLON',
-    'LESSTHAN',
-    'LARGETHAN',
-    'NOTEQUAL',
-    'COMMA',
-    'OPENBR',
-    'CLOSEBR',
-    'AND',
-    'PLUSPLUS',
-    'MINUSMINUS'
-) + tuple(reserved.values())
+             'LESS',
+             'LARGE',
+             'ASSIGN',
+             'PLUS_ASSIGN',
+             'MINUS_ASSIGN',
+             'TIMES_ASSIGN',
+             'DIVIDE_ASSIGN',
+             'NUMBER',
+             'FLOAT_NUMBER',
+             'PLUS',
+             'MINUS',
+             'TIMES',
+             'DIVIDE',
+             'LPAREN',
+             'RPAREN',
+             'OBRACELET',
+             'CBRACELET',
+             'ID',
+             'EQUALS',
+             'SEMICOLON',
+             'LESSTHAN',
+             'LARGETHAN',
+             'NOTEQUAL',
+             'COMMA',
+             'OPENBR',
+             'CLOSEBR',
+             'AND',
+             'PLUSPLUS',
+             'MINUSMINUS'
+         ) + tuple(reserved.values())
 
 t_AND = r'&'
 t_COMMA = r','
@@ -154,23 +154,25 @@ def t_newline(t):
 def t_OBRACELET(t):
     r'\{'
     add_one()
+    print("--------------------------------------------")
     return t
 
 
 def t_CBRACELET(t):
     r'\}'
     remove_one()
+    addU_one()
     return t
 
 
 def t_error(t):
-    print("message: Illegal character '%s'" % t.value[0])
+    print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
 def t_STRING(t):
     r'"[a-zA-Z_0-9]*"'
-    symbolTable.append([t.type, t.value, id(t.value), scope_number])
+    # symbolTable.append([t.type, t.value, id(t.value), scope_number])
     return t
 
 
@@ -185,8 +187,7 @@ def t_ID(t):
 
     if t.type == 'ID' and not typestack.isEmpty():
         if result == 0:
-            symbolTable.append([t.type, t.value, id(
-                t.value), scope_number, typestack.pop()])
+            symbolTable.append([t.type, t.value, id(t.value), scope_number, typestack.pop()])
     return t
 
 
@@ -211,7 +212,6 @@ precedence = (
 
 
 def check_table(ch, le, variable_type):
-    n = 0
     result = 0
     for m in symbolTable:
         if m[0:1] == ['ID']:
@@ -220,8 +220,7 @@ def check_table(ch, le, variable_type):
                     if variable_type == "none":
                         return 1
                     else:
-                        print(
-                            "message: ", ch, " this used before in this scope line number ", line_number)
+                        print(ch, " this used beforrrrrrrrrrrrrrrrrrrrre in this scope line number ", line_number)
                         exit(1)
 
     return result
@@ -234,7 +233,7 @@ def check_assign_table(ch):
             if [scope_number] >= m[3:4]:
                 count = 1
     if count == 0:
-        print("message: ", ch, " not defined before  line number ", line_number)
+        print(ch, " not defined before  line number ", line_number)
         exit(1)
 
 
@@ -255,21 +254,38 @@ def typecheck(ch1, ch2):
     if ch1 == 'int':
         if type1 != ['NUMBER']:
             if type1 == ['ID'] and type2 != ['NUMBER']:
-                print("message:  type error ",
-                      ch2, "cant be ", ch1, "line number ", line_number)
+                print(" type error ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'float':
         if type1 != ['FLOAT_NUMBER']:
             if type1 == ['ID'] and type2 != ['FLOAT']:
-                print("message:  type error ",
-                      ch2, "cant be ", ch1, "line number ", line_number)
+                print(" type error ", ch2, "cant be ", ch1, "line number ", line_number)
                 exit(1)
     if ch1 == 'string':
         if type1 != ['STRING']:
             if type1 == ['ID'] and type2 != ['STRING']:
-                print("message:  type error ",
+                print(" type error ",
                       ch2, "cant be string", "line number ", line_number)
                 exit(1)
+
+def typecheck_for_2id(ch1, ch2):
+    type1 = ''
+    type2 = ''
+    for m in symbolTable:
+            if ch1 in m[1:2]:
+                if [scope_number] >= m[3:4]:
+                    type1 = m[4:5]
+                    break
+    for m in symbolTable:
+            if ch2 in m[1:2]:
+                if [scope_number] >= m[3:4]:
+                    type2 = m[4:5]
+                    break
+    if type1!=type2:
+        print(" type errrrrrrrrrrrrrrrrrrrrrrrorO ",
+                      ch2, "line number ", line_number)
+        exit(1)
+
 
 
 def generate_code(action, p1, p3):
@@ -318,16 +334,15 @@ def p_declaration_fun(p):
 def p_var_declaration(p):
     '''var_declaration : type_specifier var_decl_list SEMICOLON'''
     if p[1] == 'void':
-        print("message:  void cant use for this")
+        print(" void cant use for thisssssssssssssssssssss")
         exit(1)
-    typecheck(p[1], p[2])
     p[0] = p[2]
     print("p_var_declaration", p[1], p[2])
 
 
 def p_var_declaration_error(p):
     'var_declaration : type_specifier error SEMICOLON'
-    print("message:  type error cant be string")
+    print(" type errrrrrrrrrrrrrrrrrrrrrrror cant be string",line_number,p[1])
 
 
 def p_var_decl_list_loop(p):
@@ -343,8 +358,8 @@ def p_var_decl_list(p):
 
 def p_var_decl_id(p):
     'var_decl_id : ID'
-    # p[0]=p[1]
-    print("p_var_decl_id")
+    p[0]=p[1]
+    print("p_var_decl_id",p[1])
 
 
 def p_var_decl_array(p):
@@ -352,20 +367,27 @@ def p_var_decl_array(p):
     # check_table(p[1], scope_number)
     semnticstack.push(id(p[1]))
     # p[0] = ("ASSIGN", p[1], p[3])
-    print("p_var_decl_id_other")
-
+    print("p_var_decl_array")
 
 def p_var_decl_ids(p):
-    '''var_decl_id : ID ASSIGN ID
-        | ID ASSIGN NUMBER
+    '''var_decl_id : ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    # check_table(p[1], scope_number)
+    typecheck(p[1], p[3])
     semnticstack.push(id(p[1]))
-    p[0] = p[3]
     PB.append([p[2], p[3], p[1]])
-    print("p_var_decl_id_other")
+    p[0]=p[1]
+    print("p_var_decl_ids")
 
+def p_var_decl_assign_ids(p):
+    'var_decl_id : ID ASSIGN ID'
+    check_assign_table(p[1])
+    check_assign_table(p[3])
+    typecheck_for_2id(p[1],p[3])
+    semnticstack.push(id(p[1]))
+    PB.append([p[2], p[3], p[1]])
+    p[0] = p[3]
+    print("p_var_decl_assign_idssssssssssssssssssssssssssssssssssssss")
 
 def p_type_specifier(p):
     '''type_specifier : INT
@@ -378,15 +400,15 @@ def p_type_specifier(p):
 
 def p_fun_declaration(p):
     '''fun_declaration : type_specifier ID LPAREN params RPAREN statement'''
-    # check_table(p[2], scope_number)
+    check_assign_table(p[2])
     semnticstack.push(id(p[2]))
     p[0] = p[6]
-    print("function " + p[1])
+    print("p_fun_declaration " + p[1])
 
 
 def p_params(p):
     'params : param_list'
-    # print("p_params")
+    print("p_params")
 
 
 def p_params_eps(p):
@@ -427,7 +449,6 @@ def p_param_id(p):
 def p_compound_stmt(p):
     'compound_stmt : OBRACELET local_declarations statement_list local_declarations CBRACELET'
     p[0] = p[3]
-    # if()
     print("p_compound_stmt")
 
 
@@ -492,14 +513,14 @@ def p_do(p):
 
 
 def p_if_stmt(p):
-    'if_stmt : if LPAREN expression RPAREN statement'
+    'if_stmt : if LPAREN rel_expression RPAREN statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], len(PB) + 2])
     increment_label_number()
-    # print("p_if_stmt")
+    print("p_if_stmt")
 
 
 def p_elif_stmt(p):
-    'if_stmt : if LPAREN expression RPAREN statement else statement'
+    'if_stmt : if LPAREN rel_expression RPAREN statement else statement'
     PB.insert(index1 + 1, ["JPF", p[3][3], index2 + 2])
     t = len(PB) - index2
     PB.insert(len(PB) - t, ["jp", len(PB) + 2, ])
@@ -511,7 +532,7 @@ def p_if(p):
     'if : IF'
     global index1
     index1 = len(PB)
-    # print("p_if")
+    print("p_if")
 
 
 def p_else(p):
@@ -523,7 +544,7 @@ def p_else(p):
 
 
 def p_while_stmt(p):
-    '''while_stmt : while LPAREN expression RPAREN statement'''
+    '''while_stmt : while LPAREN rel_expression RPAREN statement'''
     PB.insert(windex1 + 1, ["JPF", p[3][3], len(PB) + 2])
     loop.pop()
     print("p_while_stmt", id(p[1]))
@@ -542,7 +563,7 @@ forindex2 = 0
 
 
 def p_for_stmt(p):
-    '''for_stmt : for LPAREN var_declaration expression semicolon expression epsilon RPAREN statement'''
+    '''for_stmt : for LPAREN var_declaration rel_expression semicolon expression epsilon RPAREN statement'''
     m = forindex1
     while (forindex2 - m > 0):
         PB.append(PB.pop(forindex1))
@@ -579,7 +600,7 @@ def p_for(p):
 def p_break_stmt(p):
     'break_stmt : BREAK SEMICOLON'
     if loop.isEmpty():
-        print("message: semantic error in break!")
+        print("semantic error in break !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         exit(1)
     p[0] = p[1]
 
@@ -596,20 +617,13 @@ def p_expression(p):
     check_assign_table(p[1])
     if p[2] == '=':
         p[0] = generate_code('=', p[1], p[3], )
-    elif p[2] == '++':
-        p[0] = ('+', p[1], 1)
-    elif p[2] == '--':
-        p[0] = ('-', p[1], 1)
-    else:
-        p[0] = (p[2], p[1], p[3])
-    print("p_expression")
+    print("p_expression",p[1],p[2],p[3])
 
 
 def p_expression_simple(p):
     'expression : simple_expression '
     p[0] = p[1]
     print("p_expression_simple")
-
 
 def p_addopration_expression(p):
     ''' addopration_expression : PLUS_ASSIGN
@@ -629,7 +643,7 @@ def p_var(p):
     'var : ID'
     check_assign_table(p[1])
     p[0] = p[1]
-    print("p_var")
+    print("p_varrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",p[1])
 
 
 def p_var_Array(p):
@@ -774,6 +788,7 @@ def p_constant_float_number(p):
 
 def p_call(p):
     '''call : ID LPAREN args RPAREN'''
+    check_assign_table(p[1])
     # p[0] = ('CALL', p[1], "args=", p[3])
     print("p_call")
 
@@ -791,19 +806,28 @@ def p_args_list(p):
 
 
 def p_error(p):
-    print("Syntax error at '%s'" % p.value)
+    print("Syntax error at '%s'" % p.value,"line number ",line_number)
 
 
 yacc.yacc()
 if __name__ == "__main__":
-    file = open(
-        "F:\\Project\\Python\CCompiler_with_python\\example\\input.txt", "r")
+    file = open("example/input.txt", "r")
     data = file.read()
     res = yacc.parse(data)
     print("********************************************************\n")
     k = 0
-    for m in symbolTable:
+    for m in PB:
         k += 1
-        print(m, "\n")
+        print(k,m, "\n")
     print((k + 1), "halt")
-    print("****************************************\n")
+    print("**********************************************************\n")
+    k=0;
+    for m in PB:
+        k += 1
+        if m[0]=='=':
+            print(k,str(m[2])+" "+str(m[0])+" "+str(m[1]))
+        elif m[0]=='JPF':
+            print(k,str(m[0]) +" "+ str(m[1]) +" "+str(m[2]))
+        else:
+            print(k, str(m[3]) +" = "+ str(m[1]) +" "+str(m[0])+" "+str(m[2]))
+    print((k + 1), "halt")
