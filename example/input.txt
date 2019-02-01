@@ -7,6 +7,7 @@ int m (){
     }
     while(n==5){
         int y=0;
+        n="dsfsf"
         x=str;
     }
     if(x==4)

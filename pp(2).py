@@ -226,7 +226,7 @@ def check_table(ch, le, variable_type):
         if m[0:1] == ['ID']:
             if ch in m[1:2]:
                 if [le] >= m[3:4]:
-                    if variable_type == "none" or m[5:6]<[unique_scope_counter]:
+                    if variable_type == "none" or m[5:6] < [unique_scope_counter]:
                         return 1
                     else:
                         print("error: ", ch, " this used before in this scope line number ", line_number)
@@ -245,6 +245,7 @@ def check_assign_table(ch):
     if count == 0:
         print(ch, " not defined before  line number ", line_number)
         exit(1)
+
 
 def typecheck(ch1, ch2):
     type1 = ''
@@ -276,6 +277,7 @@ def typecheck(ch1, ch2):
                 print(" type errrrrrrrrrrrrrrrrrrrrrrror ",
                       ch2, "cant be string")
                 exit(1)
+
 
 def typecheck_for_2id(ch1, ch2):
     type1 = ''
@@ -383,7 +385,7 @@ def p_var_decl_ids(p):
     '''var_decl_id : ID ASSIGN NUMBER
         | ID ASSIGN FLOAT_NUMBER
         | ID ASSIGN STRING'''
-    # typecheck(p[1], p[3])
+    typecheck(p[1], p[3])
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[1]
@@ -790,6 +792,10 @@ def p_constant_number(p):
     p[0] = p[1]
     print("p_constant_number")
 
+def p_constant_string(p):
+    'constant : STRING '
+    p[0] = p[1]
+    print("p_constant_string")
 
 def p_constant_float_number(p):
     'constant : FLOAT_NUMBER '
