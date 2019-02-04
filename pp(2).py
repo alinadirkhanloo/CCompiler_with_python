@@ -351,7 +351,7 @@ def p_var_decl_ids(p):
     semnticstack.push(id(p[1]))
     PB.append([p[2], p[3], p[1]])
     p[0] = p[1]
-    print("p_var_decl_ids")
+    print("p_var_decl_ids dsad")
 
 
 def p_var_decl_assign_ids(p):
