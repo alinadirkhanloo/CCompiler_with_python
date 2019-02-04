@@ -237,7 +237,7 @@ def check_assign_table(ch):
                 if [scope_number] >= m[3:4]:
                     count = 1
     if count == 0:
-        print(ch, " not defined before  line number ", line_number)
+        print(ch, " not defined before  line number", line_number)
         exit(1)
 
 
